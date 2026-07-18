@@ -15,7 +15,7 @@ async function publishPost() {
   // Exception handling for invalid folder structure
   if (pathParts.length < 3 || pathParts[0] !== 'posts') {
     console.error('❌ Invalid folder structure. Please use posts/.../filename.html format.');
-    return;
+    process.exit(1);
   }
 
   // Automatically assign folder names as labels (tags), excluding language folders like 'en'
@@ -36,6 +36,10 @@ async function publishPost() {
     // Fallback: generate title from filename if <h1> is not found (e.g., 'echo.html' -> 'ECHO')
     title = fileName.replace('.html', '').replace(/-/g, ' ').toUpperCase();
   }
+
+  console.log(`Processing file: ${filePath}`);
+  console.log(`Detected title: "${title}"`);
+  console.log(`Detected labels: [${labels.join(', ')}]`);
 
   // 3. Authentication (OAuth2)
   const oauth2Client = new google.auth.OAuth2(
@@ -61,6 +65,7 @@ async function publishPost() {
     console.log(`✅ [Publish Success] [${labels.join(', ')}] ${title} - URL: ${res.data.url}`);
   } catch (error) {
     console.error(`❌ [Publish Failed]`, error.message);
+    process.exit(1); // Force the CI/CD job to fail so the error is visible
   }
 }
 
