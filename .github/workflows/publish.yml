@@ -46,4 +46,5 @@ jobs:
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "Publishing: $file"
             node scripts/publish.js "$file"
+            sleep 2
           done
