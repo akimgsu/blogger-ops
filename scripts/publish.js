@@ -19,10 +19,12 @@ async function publishPost() {
   const content = fs.readFileSync(filePath, 'utf8');
   const titleMatch = content.match(/<title>(.*?)<\/title>/i);
   const h1Match = content.match(/<h1>(.*?)<\/h1>/i);
+  const bodyMatch = content.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   const fileName = pathParts[pathParts.length - 1];
   const title = titleMatch 
     ? titleMatch[1].trim() 
     : (h1Match ? h1Match[1].trim() : fileName.replace('.html', '').replace(/-/g, ' ').toUpperCase());
+  const postContent = bodyMatch ? bodyMatch[1].trim() : content;
 
   console.log(`Publishing: ${filePath} | Title: "${title}" | Labels: [${labels.join(', ')}]`);
 
@@ -35,7 +37,7 @@ async function publishPost() {
   try {
     const res = await blogger.posts.insert({
       blogId: process.env.BLOG_ID,
-      resource: { title, content, labels },
+      resource: { title, content: postContent, labels },
       isDraft: false
     });
     console.log(`Success: ${res.data.url}`);

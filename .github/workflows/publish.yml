@@ -7,7 +7,12 @@ on:
     paths:
       - 'posts/en/**/*.html'
   workflow_dispatch:
-
+    inputs:
+      publish_all:
+        description: 'Publish all files (ignore changed-files check)'
+        required: false
+        type: boolean
+        default: false
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -38,14 +43,20 @@ jobs:
           files: posts/en/**/*.html
 
       - name: Publish posts
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' || github.event.inputs.publish_all == 'true'
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           BLOG_ID: ${{ secrets.BLOG_ID }}
         run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+          if [ "${{ github.event.inputs.publish_all }}" == "true" ]; then
+            FILES=$(find posts/en -name "*.html")
+          else
+            FILES="${{ steps.changed-files.outputs.all_changed_files }}"
+          fi
+          
+          for file in $FILES; do
             echo "Publishing: $file"
             node scripts/publish.js "$file"
             sleep 2
