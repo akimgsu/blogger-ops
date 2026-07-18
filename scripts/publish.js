@@ -3,7 +3,7 @@ const fs = require('fs');
 
 async function publishPost() {
   const filePath = process.argv[2]; // e.g., posts/en/tmp/echo.html
-  
+
   if (!filePath || !filePath.endsWith('.html')) {
     console.log('Skipping non-HTML file.');
     return;
@@ -11,19 +11,19 @@ async function publishPost() {
 
   // 1. Path Parsing
   const pathParts = filePath.split('/');
-  
+
   // Exception handling for invalid folder structure
   if (pathParts.length < 3 || pathParts[0] !== 'posts') {
-    console.error('❌ Invalid folder structure. Please use posts/.../filename.html format.');
+    console.error('Invalid folder structure. Please use posts/.../filename.html format.');
     process.exit(1);
   }
 
   // Automatically assign folder names as labels (tags), excluding language folders like 'en'
   // e.g., posts/en/tmp/echo.html -> labels: ['tmp']
   const labels = pathParts.slice(1, -1).filter(label => label !== 'en');
-  const topic = labels[labels.length - 1] || 'General'; 
+  const topic = labels[labels.length - 1] || 'General';
   const fileName = pathParts[pathParts.length - 1]; // e.g., 'echo.html'
-  
+
   // 2. Read Content & Extract Title
   const content = fs.readFileSync(filePath, 'utf8');
 
@@ -62,9 +62,9 @@ async function publishPost() {
       },
       isDraft: true // Publish as draft
     });
-    console.log(`✅ [Publish Success] [${labels.join(', ')}] ${title} - URL: ${res.data.url}`);
+    console.log(`[Publish Success] [${labels.join(', ')}] ${title} - URL: ${res.data.url}`);
   } catch (error) {
-    console.error(`❌ [Publish Failed]`, error.message);
+    console.error(`[Publish Failed]`, error.message);
     process.exit(1); // Force the CI/CD job to fail so the error is visible
   }
 }
