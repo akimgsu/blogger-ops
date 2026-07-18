@@ -59,6 +59,6 @@ jobs:
           for file in $FILES; do
             echo "Publishing: $file"
             node scripts/publish.js "$file"
-            echo "Waiting 5 seconds to avoid Google API rate limits..."
-            sleep 5
+            echo "Waiting 30 seconds to avoid Google API rate limits..."
+            sleep 30
           done
