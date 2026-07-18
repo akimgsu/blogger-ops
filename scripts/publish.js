@@ -18,15 +18,24 @@ async function publishPost() {
     return;
   }
 
-  // Automatically assign all folder names between 'posts' and the filename as labels (tags)
-  // e.g., posts/en/tmp/echo.html -> ['en', 'tmp']
-  const labels = pathParts.slice(1, -1);
-  const topic = labels[labels.length - 1]; // innermost folder name (e.g., 'tmp')
+  // Automatically assign folder names as labels (tags), excluding language folders like 'en'
+  // e.g., posts/en/tmp/echo.html -> labels: ['tmp']
+  const labels = pathParts.slice(1, -1).filter(label => label !== 'en');
+  const topic = labels[labels.length - 1] || 'General'; 
   const fileName = pathParts[pathParts.length - 1]; // e.g., 'echo.html'
   
-  // 2. Generate title from file name
-  const title = fileName.replace('.html', '').replace(/-/g, ' ').toUpperCase();
+  // 2. Read Content & Extract Title
   const content = fs.readFileSync(filePath, 'utf8');
+
+  // Try to extract title from the first <h1> tag in the content (e.g. <h1>Hello</h1>)
+  const h1Match = content.match(/<h1>(.*?)<\/h1>/i);
+  let title;
+  if (h1Match && h1Match[1]) {
+    title = h1Match[1].trim();
+  } else {
+    // Fallback: generate title from filename if <h1> is not found (e.g., 'echo.html' -> 'ECHO')
+    title = fileName.replace('.html', '').replace(/-/g, ' ').toUpperCase();
+  }
 
   // 3. Authentication (OAuth2)
   const oauth2Client = new google.auth.OAuth2(
@@ -38,14 +47,14 @@ async function publishPost() {
   });
   const blogger = google.blogger({ version: 'v3', auth: oauth2Client });
 
-  // 4. Call Blogger API (automatically assign labels)
+  // 4. Call Blogger API (using "resource" for the payload to prevent blank posts)
   try {
     const res = await blogger.posts.insert({
       blogId: process.env.BLOG_ID,
-      requestBody: {
+      resource: {
         title: title,
         content: content,
-        labels: labels // 💡 Key: Automatically assign all folders in the path as blog labels!
+        labels: labels
       },
       isDraft: true // Publish as draft
     });
