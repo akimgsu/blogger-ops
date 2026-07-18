@@ -33,11 +33,11 @@ async function publishPost() {
     const res = await blogger.posts.insert({
       blogId: process.env.BLOG_ID,
       resource: { title, content, labels },
-      isDraft: true
+      isDraft: false
     });
-    console.log(`✅ Success: ${res.data.url}`);
+    console.log(`Success: ${res.data.url}`);
   } catch (err) {
-    console.error(`❌ Failure:`, err.message);
+    console.error(`Failure:`, err.message);
     process.exit(1);
   }
 }
