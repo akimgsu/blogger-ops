@@ -40,7 +40,20 @@ async function publishPost() {
     });
     console.log(`Success: ${res.data.url}`);
   } catch (err) {
-    console.error(`Failure:`, err.message);
+    console.error(`❌ Failure:`, err.message);
+    if (err.response && err.response.data && err.response.data.error) {
+      console.error(`Error Details:`, JSON.stringify(err.response.data.error, null, 2));
+      const details = err.response.data.error.details;
+      if (details) {
+        for (const detail of details) {
+          if (detail.links) {
+            for (const link of detail.links) {
+              console.error(`👉 Action Required: ${link.description} - ${link.url}`);
+            }
+          }
+        }
+      }
+    }
     process.exit(1);
   }
 }
