@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margin Collapsing: Understanding CSS Layout Quirks</title>
+    <meta name="description" content="Demystify CSS Margin Collapsing. Learn why vertical margins combine, how it breaks layouts, and the best ways to avoid it using BFC, padding, or Flexbox.">
+    <meta name="keywords" content="CSS, Margin Collapsing, BFC, layout, frontend development">
+</head>
+<body>
+    <article>
+        <h1>3. Margin Collapsing</h1>
+        
+        <p>In CSS, <strong>Margin Collapsing</strong> is one of the most notorious traps that confuses beginner developers. It happens when you set margins to create space between elements, but instead of adding up, the margins merge together, resulting in less space than expected.</p>
+
+        <h2>When Does Margin Collapsing Occur?</h2>
+        <p>Margin collapsing only happens with the <strong>Top and Bottom margins</strong> of <strong>Block-level elements</strong>. It never occurs with left/right margins or inline elements. It typically manifests in two scenarios:</p>
+
+        <ol>
+            <li><strong>Between Sibling Elements</strong>:<br>
+            When the <code>margin-bottom</code> of a top element touches the <code>margin-top</code> of a bottom element, they do not add together. Instead, they collapse into a single margin whose size is equal to the <strong>largest of the two margins</strong>.<br>
+            <em>Example:</em> If the top element has a <code>margin-bottom: 30px</code> and the bottom element has a <code>margin-top: 20px</code>, the final gap will be <strong>30px</strong>, not 50px.</li>
+            
+            <li><strong>Between Parent and Child Elements</strong>:<br>
+            If a parent element has no top/bottom <code>padding</code> or <code>border</code> separating it from its child, the child's <code>margin-top</code> can "leak" out of the parent. The child's margin essentially becomes the parent's margin, dragging the parent downwards.</li>
+        </ol>
+
+        <h2>How to Avoid Margin Collapsing</h2>
+        <p>When your layout breaks due to this phenomenon, there are definitive ways to break the collapse and force the margins to behave independently.</p>
+
+        <ul>
+            <li><strong>Add Padding or Borders to the Parent</strong>: Adding a minimal <code>padding-top: 1px;</code> or <code>border: 1px solid transparent;</code> to the parent element creates a physical barrier that stops the child's margin from collapsing outward.</li>
+            <li><strong>Create a BFC (Block Formatting Context)</strong>: Applying <code>overflow: hidden;</code> or the modern <code>display: flow-root;</code> to the parent creates an independent formatting context. Margins inside a BFC will never collapse with margins outside of it.</li>
+            <li><strong>Use Flexbox or Grid</strong>: If a parent element has <code>display: flex;</code> or <code>display: grid;</code>, margin collapsing is completely disabled for its direct children. (This is why margin collapsing is less of a headache in modern web design!)</li>
+        </ul>
+    </article>
+</body>
+</html>

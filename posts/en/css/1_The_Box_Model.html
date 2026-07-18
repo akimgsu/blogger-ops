@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Box Model: CSS Core Foundations</title>
+    <meta name="description" content="Master the CSS Box Model. Learn about Content, Padding, Border, Margin, and why box-sizing: border-box is essential for modern web layout.">
+    <meta name="keywords" content="CSS, Box Model, box-sizing, border-box, web development, layout">
+</head>
+<body>
+    <article>
+        <h1>1. The Box Model and box-sizing</h1>
+        
+        <p>When a web browser renders elements on a screen, it treats every single HTML element as an invisible rectangular box. This core concept is known as the <strong>CSS Box Model</strong>.</p>
+
+        <h2>The Four Areas of the Box Model</h2>
+        <p>Every element is composed of the following four areas:</p>
+        <ol>
+            <li><strong>Content</strong>: The innermost part where your text, images, or other actual content resides.</li>
+            <li><strong>Padding</strong>: The transparent space between the content and the border. The element's background color extends into this area.</li>
+            <li><strong>Border</strong>: The line that goes around the padding and content. You can style its thickness, color, and pattern.</li>
+            <li><strong>Margin</strong>: The outermost transparent space outside the border, used to push other elements away.</li>
+        </ol>
+
+        <h2>The Pitfall of the Default Box Model (content-box)</h2>
+        <p>By default, the CSS <code>box-sizing</code> property is set to <code>content-box</code>. In this state, the <code>width</code> and <code>height</code> you assign to an element apply <em>only</em> to the <strong>Content area</strong>.</p>
+
+<pre><code>.box {
+  width: 200px;
+  padding: 20px;
+  border: 5px solid black;
+}</code></pre>
+
+        <p>If you look at the code above, is the actual width of the box 200px? No. The actual rendered width becomes <code>200px (Content) + 40px (Left/Right Padding) + 10px (Left/Right Border) = 250px</code>. This makes calculating layouts incredibly frustrating and often leads to elements breaking out of their parent containers.</p>
+
+        <h2>The Savior: box-sizing: border-box;</h2>
+        <p>To solve this headache, modern web development almost universally includes the following reset at the beginning of a project:</p>
+
+<pre><code>*, *::before, *::after {
+  box-sizing: border-box;
+}</code></pre>
+
+        <p>When you apply <code>border-box</code>, the <code>width</code> and <code>height</code> you set will encompass the <strong>Content + Padding + Border</strong> combined. So, if you declare <code>width: 200px;</code>, the total width remains exactly 200px regardless of how much padding or border you add. The content area simply shrinks to accommodate them. It completely changes the game by making CSS sizing intuitive and predictable.</p>
+    </article>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specificity & Cascade: CSS Conflict Resolution</title>
+    <meta name="description" content="Understand CSS Specificity and the Cascade. Learn how CSS weight works and why you should avoid the !important trap for better maintainability.">
+    <meta name="keywords" content="CSS, Specificity, Cascade, !important, CSS rules, web development, frontend">
+</head>
+<body>
+    <article>
+        <h1>2. Specificity and the Cascade</h1>
+        
+        <p>As the name <strong>Cascading Style Sheets (CSS)</strong> implies, styles flow downward like a waterfall, cascading over elements. However, when multiple CSS rules target the exact same element, the browser relies on a strict scoring system called <strong>Specificity</strong> to determine which styles win.</p>
+
+        <h2>How to Calculate Specificity Weight</h2>
+        <p>Think of specificity as a four-tier point system: <code>(Inline, ID, Class, Tag)</code></p>
+        <ol>
+            <li><strong>Inline Styles (1, 0, 0, 0)</strong>: Styles applied directly within the HTML element via the <code>style=""</code> attribute. These carry the heaviest weight.</li>
+            <li><strong>ID Selectors (0, 1, 0, 0)</strong>: Selectors like <code>#header</code>.</li>
+            <li><strong>Class, Pseudo-class, Attribute Selectors (0, 0, 1, 0)</strong>: Selectors like <code>.btn</code>, <code>:hover</code>, or <code>[type="text"]</code>.</li>
+            <li><strong>Tag, Pseudo-element Selectors (0, 0, 0, 1)</strong>: Selectors like <code>div</code>, <code>p</code>, or <code>::before</code>.</li>
+        </ol>
+
+        <p>For example, <code>.card .title</code> has two classes, yielding a score of <code>(0, 0, 2, 0)</code>. Meanwhile, <code>#title</code> has one ID, yielding <code>(0, 1, 0, 0)</code>. The higher weight always wins. What if the scores are tied? The rule of the <strong>Cascade</strong> takes over: the style declared <em>last</em> (closest to the bottom of the stylesheet) overrides the previous ones.</p>
+
+        <h2>The Temptation and Danger of !important</h2>
+        <p><code>!important</code> is a cheat code. It forcefully bypasses the entire specificity point system.</p>
+
+<pre><code>.btn {
+  background-color: blue !important;
+}</code></pre>
+
+        <p>When styles refuse to apply, beginners often fall into the trap of sprinkling <code>!important</code> everywhere. However, abusing this completely breaks the natural cascade of CSS. It inevitably leads to a maintenance nightmare where you have to write even more <code>!important</code> declarations just to override previous ones.</p>
+
+        <p><strong>The Best Practice for Resolving Conflicts</strong>:<br>
+        If a style isn't applying, don't reach for <code>!important</code>. Open your browser's Developer Tools to inspect which selector is outscoring yours. The correct approach is to refactor your code or organically increase your selector's weight by chaining an additional class (e.g., adding a parent class context).</p>
+    </article>
+</body>
+</html>

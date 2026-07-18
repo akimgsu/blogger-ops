@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox: Master of 1D Layouts in CSS</title>
+    <meta name="description" content="Master CSS Flexbox. Understand the Main-axis and Cross-axis, and learn how to easily center elements perfectly using justify-content and align-items.">
+    <meta name="keywords" content="CSS, Flexbox, 1D Layout, justify-content, align-items, flex-direction, centering in CSS">
+</head>
+<body>
+    <article>
+        <h1>5. The Master of 1D Layouts: Flexbox</h1>
+        
+        <p>In the past, web developers had to rely on cumbersome hacks like <code>float</code> or <code>display: inline-block</code> just to place elements side by side. The introduction of <strong>Flexbox (Flexible Box Layout)</strong> completely revolutionized CSS layouts. Flexbox is specifically designed to align and distribute space among items in a <strong>single dimension (1D)</strong>—either in a row or a column.</p>
+
+        <h2>The Main-axis and Cross-axis</h2>
+        <p>The secret to mastering Flexbox lies in understanding its <strong>two axes</strong>.</p>
+        <ul>
+            <li><strong>Main-axis</strong>: The primary direction along which flex items are laid out. This is defined by the <code>flex-direction</code> property. (If it's the default <code>row</code>, the main axis is horizontal. If it's <code>column</code>, it's vertical).</li>
+            <li><strong>Cross-axis</strong>: The axis perpendicular to the main-axis. If the main-axis is horizontal, the cross-axis is vertical.</li>
+        </ul>
+        <p>All Flexbox alignment properties operate based on these two axes.</p>
+
+        <h2>The Magic of Perfect Centering</h2>
+        <p>Historically, placing an element in the exact center of the screen was a notorious CSS headache, often requiring complex math and <code>transform</code> properties. With Flexbox, perfect vertical and horizontal centering takes exactly three lines of code.</p>
+
+<pre><code>.container {
+  display: flex;
+  justify-content: center; /* Centers along the Main-axis (horizontal) */
+  align-items: center;     /* Centers along the Cross-axis (vertical) */
+  height: 100vh;           /* Take up the full viewport height */
+}</code></pre>
+
+        <ul>
+            <li><strong><code>justify-content</code></strong>: Dictates how items are distributed along the <strong>Main-axis</strong>. (Values include: <code>flex-start</code>, <code>center</code>, <code>space-between</code>, <code>space-around</code>).</li>
+            <li><strong><code>align-items</code></strong>: Dictates how items are aligned along the <strong>Cross-axis</strong>. (Values include: <code>stretch</code>, <code>center</code>, <code>flex-start</code>, <code>flex-end</code>).</li>
+        </ul>
+
+        <p>When combined with sizing properties like <code>flex-grow</code> and <code>flex-shrink</code>, Flexbox becomes the ultimate tool for building flexible navigation bars, button groups, and mobile-friendly UI components.</p>
+    </article>
+</body>
+</html>

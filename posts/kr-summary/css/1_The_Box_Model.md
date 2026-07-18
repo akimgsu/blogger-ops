@@ -1,0 +1,3 @@
+- **박스 모델 구조**: 모든 HTML 요소는 Content, Padding, Border, Margin 4가지 영역으로 구성된 네모난 상자임.
+- **기본 박스 모델의 문제점 (`content-box`)**: `width` 속성이 Content 영역만 지정하여 Padding과 Border가 추가되면 실제 크기가 커짐.
+- **해결책 (`border-box`)**: `box-sizing: border-box;`를 적용하면 지정한 너비 내에서 Padding과 Border가 포함되어 레이아웃 계산이 직관적으로 변함.

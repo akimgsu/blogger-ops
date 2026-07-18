@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Web Design: Adapting to Any Screen</title>
+    <meta name="description" content="Learn Responsive Web Design (RWD) techniques. Master CSS media queries (@media) and relative units like rem, em, vw, and vh for modern web layouts.">
+    <meta name="keywords" content="CSS, Responsive Web Design, Media Queries, rem, em, vw, vh, mobile first">
+</head>
+<body>
+    <article>
+        <h1>7. Responsive Web Design (RWD)</h1>
+        
+        <p>In the past, companies used to build entirely separate websites for mobile devices (like <code>m.example.com</code>). Today, <strong>Responsive Web Design (RWD)</strong> is the undisputed standard. RWD allows a single HTML source to fluidly adapt its layout to perfectly fit any screen size. The core technologies driving this are Media Queries and relative units.</p>
+
+        <h2>Branching with Media Queries (@media)</h2>
+        <p>Media queries detect conditions like the browser window's width or height and apply specific CSS rules only when those conditions are met. In the industry, the "Mobile First" approach is standard: you write your base styles for mobile screens, and progressively add complexity as the screen gets wider.</p>
+
+<pre><code>/* Base Styles (Mobile First) */
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tablet (Screens 768px and wider) */
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+  }
+}
+
+/* Desktop (Screens 1024px and wider) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1000px;
+    margin: 0 auto; /* Center the layout */
+  }
+}</code></pre>
+
+        <h2>Moving Beyond Pixels (px): Strategic Use of Relative Units</h2>
+        <p>For a truly responsive design, relying purely on fixed pixels (<code>px</code>) is an anti-pattern. You must strategically use relative units that adapt to their surroundings.</p>
+
+        <ol>
+            <li><strong><code>rem</code> and <code>em</code> (The Core of Typography)</strong>
+                <ul>
+                    <li><code>em</code>: Relative to the font-size of its <strong>parent element</strong>. (If parent is 16px, 2em is 32px). It can cause compounded calculation headaches when deeply nested.</li>
+                    <li><code>rem</code>: Relative to the font-size of the <strong>root element (HTML)</strong>. Since the browser default is usually 16px, it provides highly intuitive scaling. It is the most widely used unit for font sizes, padding, and margins in modern CSS.</li>
+                </ul>
+            </li>
+            <li><strong><code>vw</code> and <code>vh</code> (Filling the Viewport)</strong>
+                <ul>
+                    <li><code>vw</code> (Viewport Width): 1% of the browser's width. <code>100vw</code> spans the exact full width of the screen.</li>
+                    <li><code>vh</code> (Viewport Height): 1% of the browser's height. <code>100vh</code> is incredibly useful for creating full-screen landing sections.</li>
+                </ul>
+            </li>
+        </ol>
+    </article>
+</body>
+</html>

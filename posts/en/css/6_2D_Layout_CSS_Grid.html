@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid: Mastering 2D Layouts</title>
+    <meta name="description" content="Discover the power of CSS Grid. Learn how to control both rows and columns simultaneously and build complex layouts intuitively using grid-template-areas.">
+    <meta name="keywords" content="CSS, CSS Grid, 2D Layout, grid-template-areas, grid-template-columns, fractional unit">
+</head>
+<body>
+    <article>
+        <h1>6. The 2D Checkerboard: CSS Grid</h1>
+        
+        <p>If Flexbox is the master of 1-dimensional (row or column) layouts, <strong>CSS Grid</strong> is the undisputed king of 2-dimensional layouts. True to its name, Grid allows you to define a checkerboard-like grid structure, granting you control over <strong>both rows and columns simultaneously</strong>. It is the most powerful layout system available in CSS today.</p>
+
+        <h2>Controlling 2 Dimensions: Rows and Columns</h2>
+        <p>In Flexbox, forcing items to wrap into a grid-like structure requires tweaking <code>flex-wrap</code> and doing complex width calculations. With Grid, you explicitly define the size and number of rows and columns on the parent container itself.</p>
+
+<pre><code>.grid-container {
+  display: grid;
+  grid-template-columns: 200px 1fr 1fr; /* 3 columns: 200px, then share remaining space equally */
+  grid-template-rows: 100px auto;       /* 2 rows: 100px tall, then size-to-content */
+  gap: 20px;                            /* Space between grid items */
+}</code></pre>
+
+        <ul>
+            <li><strong><code>1fr</code> (Fractional Unit)</strong>: A magic unit exclusive to Grid that means "a fraction of the available free space." It completely frees you from the pain of calculating exact percentages.</li>
+            <li><strong><code>gap</code></strong>: Creates clean, consistent gutters between items without the headache of margin collapsing.</li>
+        </ul>
+
+        <h2>Intuitive Placement: grid-template-areas</h2>
+        <p>The true power of Grid shines when building complex dashboards or magazine-style layouts. By using <code>grid-template-areas</code>, you can visually map out your layout structure right inside your CSS code, as if you were drawing ASCII art.</p>
+
+<pre><code>.dashboard {
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "sidebar main-content widget"
+    "footer footer footer";
+}
+
+.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main { grid-area: main-content; }
+.widget { grid-area: widget; }
+.footer { grid-area: footer; }</code></pre>
+
+        <p>When implementing Responsive Web Design, you don't need to change the HTML structure. For mobile screens, you simply redefine the string matrix in <code>grid-template-areas</code> (e.g., stacking them like <code>"header" "main" "sidebar"</code>), and the browser handles the entire visual reorganization instantly.</p>
+    </article>
+</body>
+</html>

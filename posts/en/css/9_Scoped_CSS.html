@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoped CSS and Component Styling: Preventing Style Leaks</title>
+    <meta name="description" content="Learn about CSS Encapsulation. Understand how frameworks like Angular scope styles and how to use the BEM methodology to prevent CSS class collisions.">
+    <meta name="keywords" content="CSS, Scoped CSS, BEM methodology, Encapsulation, Component styling, Angular ViewEncapsulation">
+</head>
+<body>
+    <article>
+        <h1>9. Component-Based Styling and Encapsulation</h1>
+        
+        <p>In the early days of web development, all styles were dumped into a single, massive <code>style.css</code> file. However, modern frontend development (Angular, React, Vue) builds UIs using independent <strong>Components</strong>. In this ecosystem, the biggest headache is <strong>Style Leaking</strong>—when a <code>.title</code> class written for Component A accidentally ruins the design of a <code>.title</code> in Component B. To solve this, the concept of <strong>Style Encapsulation</strong> was introduced.</p>
+
+        <h2>The Mechanics of Style Encapsulation (e.g., Angular)</h2>
+        <p>Angular uses <code>ViewEncapsulation.Emulated</code> by default to isolate styles. If a developer writes <code>.title { color: red; }</code> in a component's CSS file, the framework compiles and attaches a unique attribute identifier to the rendered output.</p>
+
+<pre><code>/* Compiled CSS Output */
+.title[_ngcontent-c1] {
+  color: red;
+}</code></pre>
+
+        <p>The HTML tag is also transformed into something like <code>&lt;h1 class="title" _ngcontent-c1&gt;</code>. By automatically injecting these random attribute selectors, the framework effectively "scopes" or traps the style so it only applies within that specific component's boundaries.</p>
+
+        <h2>Mimicking Encapsulation via Naming: The BEM Methodology</h2>
+        <p>If you aren't using a framework with built-in scoping, the most popular way to prevent naming collisions using pure CSS is the <strong>BEM (Block, Element, Modifier)</strong> methodology. It enforces a strict naming convention to guarantee uniqueness.</p>
+
+        <ul>
+            <li><strong>Block</strong>: An independent, reusable component. (e.g., <code>.card</code>)</li>
+            <li><strong>Element</strong>: A child element that only has meaning within its block. Connected with two underscores <code>__</code>. (e.g., <code>.card__title</code>)</li>
+            <li><strong>Modifier</strong>: A flag that changes the appearance or state of a block or element. Connected with two dashes <code>--</code>. (e.g., <code>.card--dark</code>)</li>
+        </ul>
+
+<pre><code>&lt;!-- HTML using BEM --&gt;
+&lt;div class="card card--dark"&gt;
+  &lt;h2 class="card__title"&gt;Card Title&lt;/h2&gt;
+  &lt;button class="card__button card__button--active"&gt;Click Me&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+        <p>By using BEM, developers can instantly understand the HTML structure just by reading the class names, and it completely eliminates the risk of global namespace collisions.</p>
+    </article>
+</body>
+</html>

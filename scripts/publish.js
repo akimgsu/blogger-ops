@@ -17,9 +17,12 @@ async function publishPost() {
     .filter(name => name && name !== 'en');
 
   const content = fs.readFileSync(filePath, 'utf8');
+  const titleMatch = content.match(/<title>(.*?)<\/title>/i);
   const h1Match = content.match(/<h1>(.*?)<\/h1>/i);
   const fileName = pathParts[pathParts.length - 1];
-  const title = h1Match ? h1Match[1].trim() : fileName.replace('.html', '').replace(/-/g, ' ').toUpperCase();
+  const title = titleMatch 
+    ? titleMatch[1].trim() 
+    : (h1Match ? h1Match[1].trim() : fileName.replace('.html', '').replace(/-/g, ' ').toUpperCase());
 
   console.log(`Publishing: ${filePath} | Title: "${title}" | Labels: [${labels.join(', ')}]`);
 

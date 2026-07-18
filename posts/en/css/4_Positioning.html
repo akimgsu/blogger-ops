@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positioning in CSS: Controlling Document Flow</title>
+    <meta name="description" content="Master CSS Positioning. Learn the differences between static, relative, absolute, fixed, and sticky, and how to control element placement in web layouts.">
+    <meta name="keywords" content="CSS, Positioning, relative, absolute, fixed, sticky, layout, normal flow">
+</head>
+<body>
+    <article>
+        <h1>4. Element Placement and Flow Control (Positioning)</h1>
+        
+        <p>By default, elements on a web page follow the <strong>Normal Flow</strong>—they stack naturally from top to bottom and flow from left to right. However, to create pop-up modals, fixed navigation bars, or overlapping elements, you need to break elements out of this flow and place them freely. The core property for this is <code>position</code>.</p>
+
+        <h2>The 5 Position Properties and Their Contexts</h2>
+        <p>The most critical concept to grasp when using the <code>position</code> property is understanding <strong>"What is the starting reference point (context) for the coordinates?"</strong></p>
+
+        <ol>
+            <li><strong>static (Default)</strong>
+                <ul>
+                    <li>Follows the normal document flow.</li>
+                    <li>The <code>top</code>, <code>bottom</code>, <code>left</code>, <code>right</code>, and <code>z-index</code> properties have no effect here.</li>
+                </ul>
+            </li>
+
+            <li><strong>relative</strong>
+                <ul>
+                    <li><strong>Context:</strong> The element's <em>original intended position</em>.</li>
+                    <li>The element remains in the normal flow, but you can nudge it around using <code>top</code> or <code>left</code> relative to where it normally would be.</li>
+                    <li>Crucially, moving the element does not affect surrounding elements; its original empty space is preserved. It is most frequently used to establish a positioning context for <code>absolute</code> child elements.</li>
+                </ul>
+            </li>
+
+            <li><strong>absolute</strong>
+                <ul>
+                    <li><strong>Context:</strong> The <em>closest ancestor element that has a position other than static</em>.</li>
+                    <li>The element is completely removed from the normal flow (it occupies no space in the document).</li>
+                    <li>If it cannot find a relatively or absolutely positioned ancestor, it falls back to the viewport (the entire browser window) as its reference point.</li>
+                </ul>
+            </li>
+
+            <li><strong>fixed</strong>
+                <ul>
+                    <li><strong>Context:</strong> The <em>viewport</em> (the visible browser window).</li>
+                    <li>The element stays pinned to the exact same spot on the screen even when the user scrolls. (Example: persistent sticky headers, "Scroll to Top" buttons).</li>
+                </ul>
+            </li>
+
+            <li><strong>sticky</strong>
+                <ul>
+                    <li>A hybrid of <code>relative</code> and <code>fixed</code>.</li>
+                    <li>The element behaves like a <code>relative</code> element within the normal flow until the user scrolls past a specified threshold (e.g., <code>top: 0px</code>). Once that threshold is hit, it "sticks" in place like a <code>fixed</code> element.</li>
+                </ul>
+            </li>
+        </ol>
+    </article>
+</body>
+</html>

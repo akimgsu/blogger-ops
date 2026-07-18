@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Custom Properties: Variables and Dark Mode</title>
+    <meta name="description" content="Learn how to use native CSS Custom Properties (CSS variables) to build maintainable themes and seamlessly implement Dark Mode with minimal JavaScript.">
+    <meta name="keywords" content="CSS, CSS Variables, Custom Properties, Dark Mode, Theming, prefers-color-scheme">
+</head>
+<body>
+    <article>
+        <h1>8. CSS Variables and Dark Mode</h1>
+        
+        <p>As CSS has evolved, you no longer need preprocessors like SASS or LESS just to use variables. We now have native <strong>CSS Custom Properties (often simply called CSS Variables)</strong>. This technology completely transforms how we handle themes, making the implementation of features like <strong>Dark Mode</strong> incredibly efficient while minimizing the need for heavy JavaScript intervention.</p>
+
+        <h2>Declaring and Using Native CSS Variables</h2>
+        <p>CSS variables always start with two dashes (<code>--</code>). To make them globally available, you typically declare them inside the <code>:root</code> pseudo-class. To use them, you call the <code>var()</code> function.</p>
+
+<pre><code>/* Global Variable Declaration */
+:root {
+  --main-bg-color: #ffffff;
+  --main-text-color: #333333;
+  --primary-accent: #007bff;
+}
+
+/* Applying the Variables */
+body {
+  background-color: var(--main-bg-color);
+  color: var(--main-text-color);
+}
+
+button {
+  background-color: var(--primary-accent);
+}</code></pre>
+
+        <p>By using variables, if your company decides to undergo a massive rebranding and change its primary color, you don't need to hunt through dozens of CSS files. You just change one line in the <code>:root</code> block.</p>
+
+        <h2>Implementing Dark Mode with Minimal to Zero JS</h2>
+        <p>Where CSS variables truly shine is in theme switching. If you want the browser to automatically detect and apply the user's Operating System dark mode preference, you can use the <code>@media (prefers-color-scheme: dark)</code> query.</p>
+
+<pre><code>/* Override variables when the user's system prefers dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --main-bg-color: #121212;
+    --main-text-color: #e0e0e0;
+    --primary-accent: #bb86fc;
+  }
+}</code></pre>
+
+        <p>If you want to give users a manual "Theme Toggle Button" on your site, you just need a tiny snippet of JavaScript to toggle a single <code>data-theme="dark"</code> attribute on the <code>&lt;html&gt;</code> or <code>&lt;body&gt;</code> tag.</p>
+
+<pre><code>/* Controlling dark mode via a data attribute */
+[data-theme="dark"] {
+  --main-bg-color: #121212;
+  --main-text-color: #e0e0e0;
+}</code></pre>
+
+        <p>With this architecture, you don't need JavaScript to manually update the color of every single element on the page. JavaScript simply flips a switch at the top level, and CSS smoothly handles the entire color palette swap underneath via variable reassignment.</p>
+    </article>
+</body>
+</html>

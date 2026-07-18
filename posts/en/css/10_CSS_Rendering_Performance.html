@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Rendering Performance: Reflow, Repaint, and GPU Acceleration</title>
+    <meta name="description" content="Optimize your CSS animations. Understand the Critical Rendering Path, Reflow, Repaint, and why you should always use transform instead of top/left for 60fps animations.">
+    <meta name="keywords" content="CSS, Rendering Performance, Reflow, Repaint, Composite, GPU Acceleration, transform">
+</head>
+<body>
+    <article>
+        <h1>10. CSS Rendering Performance Optimization</h1>
+        
+        <p>Transitioning from an intermediate to an advanced developer means going beyond just making things look pretty; it requires writing CSS that the browser can render smoothly. To prevent animations from stuttering or "janking," you must understand the browser's rendering pipeline.</p>
+
+        <h2>The Critical Rendering Path</h2>
+        <p>When the browser paints the screen, it primarily goes through three heavy stages:</p>
+        <ol>
+            <li><strong>Layout (or Reflow)</strong>: The browser calculates the geometry (size and exact coordinates) of all elements. Triggered by changes to <code>width</code>, <code>height</code>, <code>margin</code>, <code>top</code>, <code>left</code>, etc.</li>
+            <li><strong>Paint (or Repaint)</strong>: The browser fills in pixels, painting colors, borders, and shadows onto the calculated layout regions. Triggered by changes to <code>color</code>, <code>background</code>, <code>box-shadow</code>, etc.</li>
+            <li><strong>Composite</strong>: The browser takes all the painted layers and stitches them together to form the final image on the screen. Triggered by changes to <code>transform</code> and <code>opacity</code>.</li>
+        </ol>
+
+        <h2>Animation Optimization: The Magic of transform</h2>
+        <p>When beginners animate a sliding element, they often reach for the <code>left</code> or <code>top</code> properties.</p>
+
+<pre><code>/* ❌ BAD: Triggers heavy Reflows */
+.box {
+  transition: left 0.3s ease;
+  left: 0;
+}
+.box:hover {
+  left: 100px;
+}</code></pre>
+
+        <p>Because <code>left</code> changes the element's geometry, the browser is forced to recalculate the Layout (<strong>Reflow</strong>) for every single frame of the animation. This is a massively expensive CPU operation and causes frame drops.</p>
+
+<pre><code>/* ✅ GOOD: Triggers only Composite (GPU Acceleration) */
+.box {
+  transition: transform 0.3s ease;
+  transform: translateX(0);
+}
+.box:hover {
+  transform: translateX(100px);
+}</code></pre>
+
+        <p>The savior here is the <code>transform</code> property. Changes to <code>transform</code> and <code>opacity</code> completely skip the Layout and Paint phases, triggering only the <strong>Composite phase</strong>. Furthermore, modern browsers offload these specific properties to the <strong>GPU (Graphics Processing Unit)</strong>—a process known as Hardware Acceleration. This guarantees silky-smooth, 60fps animations even on low-end mobile devices.</p>
+    </article>
+</body>
+</html>
