@@ -1,0 +1,5 @@
+- **규칙**: 일반 함수 `this`는 call-site로 결정됨.
+- **우선순위**: `new` > explicit(`call`/`apply`/`bind`) > implicit > default.
+- **상실**: 메서드를 콜백으로 넘기면 `this`가 풀리기 쉬움.
+- **화살표**: lexical `this` — `new`/메서드 본체에는 부적합.
+- **클래스 필드**: 화살표는 편하지만 인스턴스별 함수 복사 비용이 있음.

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Closures: Mechanics, Patterns, and Pitfalls</title>
+  <meta name="description" content="Understand JavaScript closures: lexical environments, private state, factories, debounce, loop bugs, and memory considerations.">
+  <meta name="keywords" content="JavaScript closures, lexical environment, private state, debounce, memory leaks, var vs let">
+</head>
+<body>
+  <article>
+    <h1>Part 5: Closures — Mechanics, Practical Patterns, and Pitfalls</h1>
+    <p>A <strong>closure</strong> is a function paired with its definition-time <strong>Lexical Environment</strong>. Inner functions can access outer variables after the outer function returns.</p>
+
+    <h2>1. Basic Example</h2>
+<pre><code>function makeCounter() {
+  let count = 0;
+  return function increase() {
+    count += 1;
+    return count;
+  };
+}
+const counter = makeCounter();
+counter(); // 1
+counter(); // 2</code></pre>
+
+    <h2>2. Why It Works</h2>
+    <p>The engine keeps environment records alive on the heap for free variables still referenced by the closure.</p>
+
+    <h2>3. Practical Uses</h2>
+<pre><code>function createWallet(initial = 0) {
+  let balance = initial;
+  return {
+    deposit(amount) { balance += amount; return balance; },
+    getBalance() { return balance; },
+  };
+}
+
+function debounce(fn, delay) {
+  let timerId;
+  return function (...args) {
+    clearTimeout(timerId);
+    timerId = setTimeout(() =&gt; fn.apply(this, args), delay);
+  };
+}</code></pre>
+
+    <h2>4. Classic Loop Bug</h2>
+<pre><code>for (var i = 0; i &lt; 3; i++) setTimeout(() =&gt; console.log(i), 0); // 3 3 3
+for (let i = 0; i &lt; 3; i++) setTimeout(() =&gt; console.log(i), 0); // 0 1 2</code></pre>
+
+    <h2>5. Memory Cost</h2>
+    <p>Closures retain outer environments. Capture only what you need and detach listeners/timers when done.</p>
+<pre><code>function createHandler(hugeData) {
+  const id = hugeData.id;
+  return () =&gt; console.log(id);
+}</code></pre>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>Closure = function + definition-time lexical environment.</li>
+      <li>Outer functions can finish while free variables remain reachable.</li>
+      <li>Use for encapsulation, currying/partial application, events/debounce.</li>
+      <li>Prefer <code>let</code> for loop + async callbacks.</li>
+      <li>Minimize retained scope and unsubscribe to avoid memory pressure.</li>
+    </ul>
+  </article>
+</body>
+</html>

@@ -1,0 +1,5 @@
+- **타입 분류**: Primitive 7종과 Object로 나뉘며, 함수는 `typeof`가 `"function"`임.
+- **typeof null**: `"object"`는 초기 엔진 타입 태그 유산이며 호환성 때문에 유지됨.
+- **null vs undefined**: null은 의도적 공백, undefined는 미할당/누락에 가까움.
+- **검사**: `null` 가드, `Array.isArray`, `Number.isNaN`/`isFinite`를 함께 씀.
+- **주의**: 원시 래퍼(`new String` 등)는 피함.

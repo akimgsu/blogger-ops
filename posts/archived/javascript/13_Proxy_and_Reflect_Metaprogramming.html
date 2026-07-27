@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Proxy and Reflect Metaprogramming Basics</title>
+  <meta name="description" content="Learn Proxy traps and Reflect for JavaScript metaprogramming: validation, logging, defaults, reactive ideas, pitfalls, and revocable proxies.">
+  <meta name="keywords" content="JavaScript Proxy, Reflect, metaprogramming, Proxy traps, revocable proxy, reactivity">
+</head>
+<body>
+  <article>
+    <h1>Part 13: Metaprogramming with Proxy and Reflect</h1>
+    <p><code>Proxy</code> intercepts default object operations via traps; <code>Reflect</code> forwards the default behavior safely.</p>
+
+    <h2>1. Basic Proxy</h2>
+<pre><code>const proxy = new Proxy(target, {
+  get(obj, prop, receiver) {
+    return Reflect.get(obj, prop, receiver);
+  },
+  set(obj, prop, value, receiver) {
+    return Reflect.set(obj, prop, value, receiver);
+  },
+});</code></pre>
+
+    <h2>2. Practical Patterns</h2>
+<pre><code>function withDefault(obj, defaultValue = 0) {
+  return new Proxy(obj, {
+    get(target, prop, receiver) {
+      return prop in target ? Reflect.get(target, prop, receiver) : defaultValue;
+    },
+  });
+}
+
+function reactive(obj, onChange) {
+  return new Proxy(obj, {
+    set(target, prop, value, receiver) {
+      const prev = target[prop];
+      const ok = Reflect.set(target, prop, value, receiver);
+      if (ok &amp;&amp; prev !== value) onChange(prop, value, prev);
+      return ok;
+    },
+  });
+}</code></pre>
+
+    <h2>3. Pitfalls and Revocable Proxies</h2>
+    <ul>
+      <li><code>proxy !== target</code></li>
+      <li>Hot-path performance cost</li>
+      <li>Inconsistent traps break introspection APIs</li>
+      <li>Private fields are hard to intercept</li>
+    </ul>
+<pre><code>const { proxy, revoke } = Proxy.revocable({ secret: 42 }, {});
+revoke(); // further access throws</code></pre>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>Proxy intercepts operations via traps.</li>
+      <li>Reflect forwards defaults; pass <code>receiver</code> correctly.</li>
+      <li>Useful for validation, logging, defaults, and reactivity sketches.</li>
+      <li>Watch identity, performance, and trap consistency.</li>
+      <li><code>Proxy.revocable</code> can withdraw access.</li>
+    </ul>
+  </article>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>V8-Friendly JavaScript and Preventing Memory Leaks</title>
+  <meta name="description" content="Write V8-friendly JavaScript: stable hidden classes, monomorphic calls, packed arrays, plus memory-leak defenses with WeakMap and dispose patterns.">
+  <meta name="keywords" content="V8 optimization, hidden class, monomorphic, JavaScript memory leak, WeakMap, inline cache">
+</head>
+<body>
+  <article>
+    <h1>Part 14: V8-Friendly Code and Memory Leak Prevention</h1>
+    <p>Keep shapes V8 can optimize, and ensure objects don’t stay reachable longer than they should. Measure first.</p>
+
+    <h2>1. Stable Shapes and Monomorphic Calls</h2>
+<pre><code>function Point(x, y) { this.x = x; this.y = y; } // fix shape at construction
+function stringLen(s) { return s.length; }       // keep hot functions narrow</code></pre>
+
+    <h2>2. Arrays Prefer Packed Homogeneous Elements</h2>
+<pre><code>const xs = [1, 2, 3, 4]; // good
+const ys = [1, , 3];     // holey — worse
+const zs = [1, 2, "3"];  // mixed — worse</code></pre>
+
+    <h2>3. Typical Leaks</h2>
+<pre><code>class Widget {
+  constructor(el) {
+    this.el = el;
+    this.onClick = () =&gt; this.render();
+    el.addEventListener("click", this.onClick);
+  }
+  destroy() {
+    this.el.removeEventListener("click", this.onClick);
+    this.el = null;
+  }
+  render() {}
+}</code></pre>
+    <p>Also watch closures retaining huge data, unbounded caches, and retained DOM nodes.</p>
+
+    <h2>4. WeakMap and Dispose</h2>
+<pre><code>const metadata = new WeakMap();
+metadata.set(obj, info); // entry can go away with the key</code></pre>
+    <p>Prefer explicit dispose for deterministic cleanup.</p>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>V8 likes shape-stable objects and monomorphic calls.</li>
+      <li>Packed, homogeneous arrays optimize better.</li>
+      <li>Measure first; fix algorithmic complexity before micro-tuning.</li>
+      <li>Leaks come from lingering references.</li>
+      <li>Design lifetimes with WeakMap and explicit dispose.</li>
+    </ul>
+  </article>
+</body>
+</html>

@@ -1,0 +1,5 @@
+- **프로토콜**: Iterable은 `Symbol.iterator`로 iterator를 제공, `next()`는 `{value, done}`.
+- **소비**: `for...of`, 스프레드 등이 이 프로토콜에 의존함.
+- **Generator**: `function*`/`yield`로 iterator를 간결히 구현하고 지연 평가함.
+- **확장**: `yield*` 위임, async generator로 비동기 스트림.
+- **안전**: 무한 시퀀스는 `take`와 조합해 소비함.

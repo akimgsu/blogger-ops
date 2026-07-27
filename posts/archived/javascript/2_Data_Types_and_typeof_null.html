@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Data Types and the Secret of typeof null</title>
+  <meta name="description" content="A clear guide to JavaScript types, typeof behavior, why typeof null is object, and practical type-checking patterns.">
+  <meta name="keywords" content="JavaScript typeof, typeof null, primitive types, null vs undefined, type checking">
+</head>
+<body>
+  <article>
+    <h1>Part 2: JavaScript Data Types and the Secret of typeof null</h1>
+    <p>JavaScript’s type system looks simple until historical quirks—especially <code>typeof null === "object"</code>—collide with dynamic typing.</p>
+
+    <h2>1. ECMAScript Type Taxonomy</h2>
+    <p><strong>Primitives:</strong> Undefined, Null, Boolean, Number, BigInt, String, Symbol.</p>
+    <p><strong>Objects:</strong> plain objects, arrays, dates, maps, and functions (callable objects). Only functions report <code>"function"</code> from <code>typeof</code>.</p>
+<pre><code>typeof {};           // "object"
+typeof [];           // "object"
+typeof function(){}; // "function"
+typeof null;         // "object"</code></pre>
+
+    <h2>2. typeof Cheat Sheet</h2>
+<pre><code>typeof undefined;   // "undefined"
+typeof 123n;        // "bigint"
+typeof Symbol();    // "symbol"
+typeof class A {};  // "function"
+typeof notDeclared; // "undefined" (no ReferenceError)</code></pre>
+
+    <h2>3. Why typeof null === "object"</h2>
+    <p>This is a <strong>legacy implementation bug</strong>, not intentional design. Early engines tagged objects with low bits <code>000</code>, and <code>null</code> was a null pointer (<code>0</code>), so it looked like an object. Compatibility keeps the quirk alive.</p>
+
+    <h2>4. null vs undefined</h2>
+    <p><code>null</code> usually means intentionally empty; <code>undefined</code> means unassigned or missing. Prefer <code>null</code> for explicit API “empty” and <code>undefined</code> for omission.</p>
+
+    <h2>5. Correct Type Checks</h2>
+<pre><code>if (value !== null &amp;&amp; typeof value === "object") { /* real object (incl. arrays) */ }
+Array.isArray([]);
+Number.isNaN(NaN);
+Number.isFinite(42);
+
+function isObject(value) {
+  return value !== null &amp;&amp; typeof value === "object" &amp;&amp; !Array.isArray(value);
+}</code></pre>
+
+    <h2>6. Boxing Caveat</h2>
+<pre><code>const s = new String("hi");
+typeof s;   // "object"
+s === "hi"; // false</code></pre>
+    <p>Avoid primitive wrapper constructors in application code.</p>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>Values are primitives (7) or objects; functions typeof as <code>"function"</code>.</li>
+      <li><code>typeof null === "object"</code> is a historical artifact kept for compatibility.</li>
+      <li><code>null</code> is intentional emptiness; <code>undefined</code> is missing/unassigned.</li>
+      <li>Guard null; use <code>Array.isArray</code> and <code>Number.isNaN</code>/<code>isFinite</code>.</li>
+      <li>Skip primitive wrappers; remember Symbol/BigInt typeof results.</li>
+    </ul>
+  </article>
+</body>
+</html>

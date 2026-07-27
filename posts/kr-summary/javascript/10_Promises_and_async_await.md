@@ -1,0 +1,5 @@
+- **상태**: Promise는 pending → fulfilled/rejected의 불변 상태 머신임.
+- **문법**: then 체이닝과 async/await는 같은 모델의 다른 표현임.
+- **병렬**: 독립 작업은 `all`/`allSettled`로 병렬화하고 실패 정책을 고름.
+- **에러**: try/catch와 `.catch`로 rejection을 반드시 처리함.
+- **안티패턴**: 직렬 await 남용, async executor, floating promise.

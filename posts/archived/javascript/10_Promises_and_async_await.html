@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promises and async/await: A Practical Async Guide</title>
+  <meta name="description" content="A practical JavaScript guide to Promises and async/await: states, chaining, error handling, Promise.all, concurrency limits, and anti-patterns.">
+  <meta name="keywords" content="JavaScript Promise, async await, Promise.all, Promise.allSettled, unhandled rejection">
+</head>
+<body>
+  <article>
+    <h1>Part 10: Promises and async/await — A Practical Guide</h1>
+    <p>Promises and async/await turn callback pyramids into linear control flow.</p>
+
+    <h2>1. Promise States</h2>
+    <p><code>pending</code> → <code>fulfilled</code> or <code>rejected</code>, then immutable.</p>
+<pre><code>new Promise((resolve, reject) =&gt; {
+  ok ? resolve({ id: 1 }) : reject(new Error("fail"));
+}).then(console.log).catch(console.error);</code></pre>
+
+    <h2>2. Chaining and async/await</h2>
+<pre><code>async function loadUser(id) {
+  const res = await fetch(`/api/users/${id}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}</code></pre>
+    <p>Async functions always return Promises. Always handle rejections.</p>
+
+    <h2>3. Parallel vs Serial</h2>
+<pre><code>const [a, b] = await Promise.all([fetchA(), fetchB()]);
+await Promise.allSettled([job1(), job2()]);</code></pre>
+    <p>Also useful: <code>race</code>, <code>any</code>, and timeout races.</p>
+
+    <h2>4. Production Patterns</h2>
+<pre><code>async function mapPool(items, limit, fn) {
+  const results = new Array(items.length);
+  let i = 0;
+  async function worker() {
+    while (i &lt; items.length) {
+      const idx = i++;
+      results[idx] = await fn(items[idx]);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () =&gt; worker()));
+  return results;
+}</code></pre>
+
+    <h2>5. Anti-Patterns</h2>
+    <ul>
+      <li>Serializing independent awaits in a loop</li>
+      <li>Async Promise executors</li>
+      <li>Floating promises without <code>.catch</code></li>
+    </ul>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>Promises are one-way state machines.</li>
+      <li>then-chains and async/await express the same model.</li>
+      <li>Parallelize independent work with all/allSettled.</li>
+      <li>Always handle rejections.</li>
+      <li>Avoid serial-await abuse, async executors, and floating promises.</li>
+    </ul>
+  </article>
+</body>
+</html>

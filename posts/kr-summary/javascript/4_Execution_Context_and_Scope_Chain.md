@@ -1,0 +1,5 @@
+- **EC**: 코드 실행 환경이며 Call Stack에 쌓임.
+- **Lexical Environment**: 변수 매핑과 스코프 체인(outer 참조)을 담당함.
+- **호이스팅**: 생성 단계의 식별자 등록이며 `let`/`const`는 TDZ가 있음.
+- **Lexical scope**: 정의 위치가 호출 위치보다 중요함.
+- **루프 버그**: `var` vs `let` 스코프 차이는 루프+비동기의 전형적 원인임.

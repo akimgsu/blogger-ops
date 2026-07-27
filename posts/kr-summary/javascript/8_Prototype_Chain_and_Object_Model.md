@@ -1,0 +1,5 @@
+- **핵심**: prototype chain을 통한 프로퍼티 위임이 객체 모델의 본질임.
+- **prototype**: `Fn.prototype`은 `new Fn()` 인스턴스의 `[[Prototype]]`이 됨.
+- **class**: 프로토타입 연결을 감싼 문법 설탕에 가까움.
+- **읽기/쓰기**: 읽기는 체인 탐색, 쓰기는 주로 own property(섀도잉).
+- **보안**: 오염 방지를 위해 null-prototype 객체나 Map을 활용함.

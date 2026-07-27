@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript this Binding Rules Explained (Including Arrow Functions)</title>
+  <meta name="description" content="A complete guide to JavaScript this: default, implicit, explicit, new binding, priority order, and lexical this in arrow functions.">
+  <meta name="keywords" content="JavaScript this, call apply bind, arrow function this, new binding, this binding rules">
+</head>
+<body>
+  <article>
+    <h1>Part 6: Demystifying this Binding Rules (Including Arrow Functions)</h1>
+    <p>For ordinary functions, <strong>this follows the call site</strong>. Arrow functions are different—they use <strong>lexical this</strong>.</p>
+
+    <h2>1. Four Binding Rules</h2>
+    <h3>Default</h3>
+<pre><code>function show() { console.log(this); }
+show(); // globalThis (non-strict) or undefined (strict)</code></pre>
+    <h3>Implicit</h3>
+<pre><code>user.greet(); // this === user
+const greet = user.greet; greet(); // this lost</code></pre>
+    <h3>Explicit</h3>
+<pre><code>fn.call(obj, a, b);
+fn.apply(obj, [a, b]);
+const bound = fn.bind(obj);</code></pre>
+    <h3>new</h3>
+<pre><code>function Person(name) { this.name = name; }
+const p = new Person("Grace");</code></pre>
+
+    <h2>2. Priority</h2>
+    <p><code>new</code> &gt; explicit (<code>call</code>/<code>apply</code>/<code>bind</code>) &gt; implicit (<code>obj.fn</code>) &gt; default.</p>
+
+    <h2>3. Arrow Functions</h2>
+<pre><code>const timer = {
+  label: "tick",
+  start() {
+    setInterval(() =&gt; console.log(this.label), 1000); // timer
+  },
+};</code></pre>
+    <p>Arrows have no own <code>this</code>, cannot be used with <code>new</code>, and are a poor fit as method bodies. Prefer regular methods; use arrows inside callbacks.</p>
+
+    <h2>4. Class Field Arrows</h2>
+<pre><code>class Button {
+  onClick() { console.log(this.label); }
+  onClickArrow = () =&gt; { console.log(this.label); };
+}</code></pre>
+    <p>Convenient for listeners, but each instance gets its own function copy.</p>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>Regular-function <code>this</code> is call-site driven.</li>
+      <li>Priority: <code>new</code> &gt; explicit &gt; implicit &gt; default.</li>
+      <li>Extracting methods as callbacks often loses <code>this</code>.</li>
+      <li>Arrows use lexical <code>this</code>; avoid as constructors/method bodies.</li>
+      <li>Class-field arrows trade convenience for per-instance cost.</li>
+    </ul>
+  </article>
+</body>
+</html>

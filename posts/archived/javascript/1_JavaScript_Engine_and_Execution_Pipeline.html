@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Engine &amp; Execution Pipeline Explained (V8, AST, JIT)</title>
+  <meta name="description" content="Learn how the V8 JavaScript engine runs code: parsing, AST, Ignition bytecode, TurboFan JIT, and deoptimization—with practical performance tips.">
+  <meta name="keywords" content="JavaScript engine, V8, AST, JIT, Ignition, TurboFan, deoptimization, JavaScript performance">
+</head>
+<body>
+  <article>
+    <h1>Part 1: Mastering the JavaScript Engine and Execution Pipeline (V8, AST, JIT)</h1>
+    <p>JavaScript is often called an “interpreted language,” but modern engines—especially <strong>V8</strong>—run a refined pipeline: <strong>parse → AST → bytecode → JIT → optimize/deoptimize</strong>. Understanding it makes performance issues far easier to diagnose.</p>
+
+    <h2>1. What Is a JavaScript Engine?</h2>
+    <p>A JavaScript engine reads source, transforms it into an executable form, and runs it. V8 powers Chrome, Node.js, Deno, and Electron.</p>
+
+    <h2>2. The Pipeline at a Glance</h2>
+<pre><code>Source Code
+  → Parser
+  → AST
+  → Ignition (bytecode)
+  → Hot spot detected
+  → TurboFan (optimized machine code)
+  → Deoptimization if assumptions break</code></pre>
+    <p>V8 does not compile everything to native code up front. It starts fast, then deeply optimizes only <strong>hot code</strong>.</p>
+
+    <h2>3. Parsing and the AST</h2>
+    <p>Lexical analysis produces tokens; syntax analysis builds an <strong>Abstract Syntax Tree</strong>. Babel, ESLint, and TypeScript all operate on ASTs.</p>
+<pre><code>const x = 1 + 2;
+// VariableDeclaration → BinaryExpression(+) → Literal(1), Literal(2)</code></pre>
+
+    <h2>4. Ignition: Interpreter and Bytecode</h2>
+    <p>Ignition interprets bytecode for fast startup, lower memory use, and runtime profiling via feedback vectors (inline caches).</p>
+
+    <h2>5. JIT and TurboFan</h2>
+    <p><strong>JIT</strong> compiles hot functions to machine code using speculative type assumptions.</p>
+<pre><code>function add(a, b) { return a + b; }
+for (let i = 0; i &lt; 100000; i++) add(i, i + 1);
+add("hello", "world"); // may break assumptions → deopt candidate</code></pre>
+
+    <h2>6. Deoptimization</h2>
+    <p>Broken assumptions (type changes, object shape changes, megamorphic sites) cause V8 to fall back to bytecode.</p>
+<pre><code>function greet(user) { return "Hi, " + user.name; }
+greet({ name: "Ada" });
+greet({ fullName: "NoName" }); // different shape — worse for ICs</code></pre>
+
+    <h2>7. Practical Patterns</h2>
+<pre><code>// Prefer narrow, consistent types in hot paths
+function sumNumbers(list) {
+  let sum = 0;
+  for (const n of list) sum += n;
+  return sum;
+}</code></pre>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>V8 runs Parser → AST → Ignition → TurboFan → optional Deopt.</li>
+      <li>ASTs are the shared intermediate form across tooling.</li>
+      <li>JIT optimizes hot code under speculative assumptions.</li>
+      <li>Unstable types/shapes can trigger deopts.</li>
+      <li>Consistent shapes and narrow types are V8-friendly.</li>
+    </ul>
+  </article>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Execution Context and Scope Chain in JavaScript</title>
+  <meta name="description" content="Learn JavaScript execution contexts, the call stack, lexical environments, hoisting, TDZ, and scope chain identifier lookup.">
+  <meta name="keywords" content="JavaScript execution context, scope chain, lexical scope, hoisting, TDZ, call stack">
+</head>
+<body>
+  <article>
+    <h1>Part 4: Execution Context and the Scope Chain</h1>
+    <p>Where variables are visible and how functions run is explained by <strong>Execution Context</strong> and the <strong>Scope Chain</strong>.</p>
+
+    <h2>1. What Is an Execution Context?</h2>
+    <p>An EC is the environment for a running code fragment, pushed onto the <strong>Call Stack</strong>: Global, Function, and (avoid) Eval contexts.</p>
+
+    <h2>2. Building Blocks</h2>
+    <ul>
+      <li>Lexical/Variable Environment — identifier bindings</li>
+      <li>Scope chain — outer references for lookup</li>
+      <li><code>this</code> binding — call-site dependent (Part 6)</li>
+    </ul>
+
+    <h2>3. Creation vs Execution</h2>
+<pre><code>function demo(a) {
+  console.log(a); // 1
+  console.log(b); // undefined (var hoisted)
+  // console.log(c); // TDZ for let
+  var b = 2;
+  let c = 3;
+}</code></pre>
+
+    <h2>4. Hoisting</h2>
+    <p>Identifiers are registered in the creation phase. Function declarations are fully initialized; <code>var</code> becomes <code>undefined</code>; <code>let</code>/<code>const</code> stay in the TDZ.</p>
+
+    <h2>5. Lexical Scope</h2>
+    <p>Scope is decided by <strong>where code is written</strong>, not where it is called.</p>
+<pre><code>function outer() {
+  const x = "outer";
+  return function inner() { console.log(x); };
+}
+outer()(); // "outer"</code></pre>
+
+    <h2>6. Blocks and Loops</h2>
+<pre><code>for (let i = 0; i &lt; 3; i++) setTimeout(() =&gt; console.log(i), 0); // 0 1 2
+for (var j = 0; j &lt; 3; j++) setTimeout(() =&gt; console.log(j), 0); // 3 3 3</code></pre>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>Execution contexts stack on the call stack.</li>
+      <li>Lexical environments hold bindings and outer links.</li>
+      <li>Hoisting is creation-phase registration; <code>let</code>/<code>const</code> have a TDZ.</li>
+      <li>JS is lexically scoped—definition site beats call site for free vars.</li>
+      <li><code>var</code> vs <code>let</code> explains classic loop + async bugs.</li>
+    </ul>
+  </article>
+</body>
+</html>

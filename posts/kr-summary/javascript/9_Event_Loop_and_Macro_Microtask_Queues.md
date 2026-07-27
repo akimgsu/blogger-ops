@@ -1,0 +1,5 @@
+- **Event Loop**: Call Stack이 비면 큐의 작업을 실행함.
+- **우선순위**: Microtask(Promise then 등) > Macrotask(setTimeout 등).
+- **setTimeout(0)**: 현재 턴의 동기/마이크로보다 늦음.
+- **await**: 이후 코드는 microtask로 재개됨.
+- **주의**: microtask 무한 연쇄는 렌더/타이머 starvation을 유발할 수 있음.

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primitives vs References and Immutability in JavaScript</title>
+  <meta name="description" content="Understand JavaScript value vs reference semantics, mutation vs reassignment, and practical immutability with spread and structuredClone.">
+  <meta name="keywords" content="JavaScript primitive vs reference, immutability, shallow copy, structuredClone, Object.freeze">
+</head>
+<body>
+  <article>
+    <h1>Part 3: Primitives vs References and Immutability</h1>
+    <p>Many bugs come from misunderstanding whether a <strong>value was copied</strong> or a <strong>reference was shared</strong>.</p>
+
+    <h2>1. Definitions</h2>
+    <ul>
+      <li><strong>Primitive:</strong> the value itself is copied.</li>
+      <li><strong>Object/Reference:</strong> a reference to heap memory is copied; the same object is shared.</li>
+    </ul>
+<pre><code>let a = 10; let b = a; b = 20; // a stays 10
+let obj1 = { n: 10 }; let obj2 = obj1; obj2.n = 20; // obj1.n is 20</code></pre>
+
+    <h2>2. Function Arguments</h2>
+    <p>Arguments are pass-by-value, but for objects that value <em>is</em> a reference. Distinguish reassignment from mutation.</p>
+<pre><code>function bumpObj(o) { o.count += 1; }
+function reassign(o) { o = { count: 999 }; }</code></pre>
+
+    <h2>3. === Meaning</h2>
+<pre><code>{} === {}; // false — different objects
+const a = {}; const b = a; a === b; // true</code></pre>
+
+    <h2>4. Immutability</h2>
+    <p>Don’t change the old value—create a new one. Primitives are already immutable; the hard part is object/array mutation.</p>
+<pre><code>const nextUser = { ...user, age: 31 };
+const nextList = [...list, 4];
+// Spread is shallow — copy nested paths explicitly when needed</code></pre>
+
+    <h2>5. Object.freeze Limits</h2>
+    <p><code>Object.freeze</code> is shallow. Prefer immutable-update habits (or libraries like Immer) over relying on freeze alone.</p>
+
+    <h2>6. Copying Options</h2>
+    <p>Shallow: spread / <code>Object.assign</code>. Deep: <code>structuredClone</code> (with limits). JSON round-trip loses many types.</p>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>Primitives copy by value; objects share by reference.</li>
+      <li>Object arguments expose internal mutations to callers.</li>
+      <li>Immutability creates new snapshots instead of in-place changes.</li>
+      <li>Spread is shallow; nest carefully or use <code>structuredClone</code>.</li>
+      <li><code>Object.freeze</code> is shallow—design patterns matter more.</li>
+    </ul>
+  </article>
+</body>
+</html>

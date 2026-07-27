@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Event Loop: Macrotasks and Microtasks</title>
+  <meta name="description" content="Learn how the JavaScript event loop schedules macrotasks and microtasks, why setTimeout(0) waits, and how async/await resumes.">
+  <meta name="keywords" content="JavaScript event loop, microtask, macrotask, Promise then, setTimeout, queueMicrotask">
+</head>
+<body>
+  <article>
+    <h1>Part 9: The Event Loop and Macro/Microtask Queues</h1>
+    <p>JavaScript user code is largely single-threaded. Timers, network I/O, and events coexist because the <strong>Event Loop</strong> coordinates the Call Stack with task queues.</p>
+
+    <h2>1. One Turn (Simplified)</h2>
+    <ol>
+      <li>Run synchronous code</li>
+      <li>Drain <strong>all microtasks</strong></li>
+      <li>Possible render (browsers)</li>
+      <li>Run the next <strong>macrotask</strong></li>
+      <li>Repeat</li>
+    </ol>
+
+    <h2>2. Macrotask vs Microtask</h2>
+    <p><strong>Macrotasks:</strong> <code>setTimeout</code>, I/O callbacks, UI events.<br>
+    <strong>Microtasks:</strong> <code>Promise.then</code>, <code>queueMicrotask</code>, <code>MutationObserver</code>.</p>
+<pre><code>console.log("script start");
+setTimeout(() =&gt; console.log("timeout"), 0);
+Promise.resolve().then(() =&gt; console.log("promise"));
+console.log("script end");
+// start → end → promise → timeout</code></pre>
+
+    <h2>3. Why setTimeout(0) Still Waits</h2>
+    <p>It queues a task after the current stack and microtasks—not “run in 0ms.”</p>
+
+    <h2>4. async/await</h2>
+<pre><code>async function run() {
+  console.log("A");
+  await null;
+  console.log("B");
+}
+console.log("C"); run(); console.log("D");
+// C A D B</code></pre>
+
+    <h2>5. Starvation Warning</h2>
+<pre><code>// Unbounded microtask chains can starve rendering/timers
+function spam() { Promise.resolve().then(spam); }</code></pre>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>The event loop runs queued work when the call stack is empty.</li>
+      <li>Microtasks outrank macrotasks.</li>
+      <li><code>setTimeout(0)</code> still waits until after sync + microtasks.</li>
+      <li>Code after <code>await</code> resumes as a microtask.</li>
+      <li>Unbounded microtask chains can starve the UI.</li>
+    </ul>
+  </article>
+</body>
+</html>

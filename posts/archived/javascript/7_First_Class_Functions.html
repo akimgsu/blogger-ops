@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First-Class Functions in JavaScript</title>
+  <meta name="description" content="Explore JavaScript first-class functions: higher-order functions, callbacks, purity, currying, partial application, and composition.">
+  <meta name="keywords" content="first-class functions, higher-order functions, JavaScript callbacks, currying, function composition">
+</head>
+<body>
+  <article>
+    <h1>Part 7: JavaScript Functions as First-Class Citizens</h1>
+    <p>In JavaScript, functions are <strong>values</strong>: assignable, passable, returnable, and storable—and they are objects too.</p>
+
+    <h2>1. First-Class Basics</h2>
+<pre><code>const add = (a, b) =&gt; a + b;
+function compute(fn, a, b) { return fn(a, b); }
+function makeAdder(x) { return (y) =&gt; x + y; }
+greet.version = "1.0"; // functions are objects</code></pre>
+
+    <h2>2. Higher-Order Functions</h2>
+<pre><code>nums.filter((n) =&gt; n % 2 === 0);
+nums.map((n) =&gt; n * n);
+function withLogging(fn) {
+  return function (...args) {
+    console.log("args:", args);
+    return fn(...args);
+  };
+}</code></pre>
+
+    <h2>3. Callbacks and IoC</h2>
+    <p>Callbacks invert control and enable async APIs, but nesting can become callback hell—Promises help (Part 10).</p>
+
+    <h2>4. Purity vs Side Effects</h2>
+<pre><code>function tax(price, rate) { return price * rate; } // pure
+function addToTotal(n) { total += n; return total; } // impure</code></pre>
+    <p>Prefer a pure core with an impure I/O shell.</p>
+
+    <h2>5. Currying, Partial Application, Composition</h2>
+<pre><code>const curryAdd = (a) =&gt; (b) =&gt; (c) =&gt; a + b + c;
+const pipe = (...fns) =&gt; (value) =&gt; fns.reduce((acc, fn) =&gt; fn(acc), value);</code></pre>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>JS functions are first-class values and objects.</li>
+      <li>Higher-order functions power map/filter/decorators.</li>
+      <li>Callbacks enable IoC but can deepen nesting.</li>
+      <li>Currying, partial application, and composition assemble small functions.</li>
+      <li>Separating pure logic from side effects improves testability.</li>
+    </ul>
+  </article>
+</body>
+</html>

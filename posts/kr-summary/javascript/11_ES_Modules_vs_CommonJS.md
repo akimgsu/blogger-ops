@@ -1,0 +1,5 @@
+- **ESM vs CJS**: ESM은 표준 정적 모듈, CJS는 Node의 전통적 동기 모듈임.
+- **장점**: ESM은 live binding·tree-shaking에 유리, 동적 로딩은 `import()`.
+- **CJS**: `require`/`module.exports`, 값 복사 느낌이 강함.
+- **Node 혼용**: `type`/`mjs`/`cjs`로 구분, CJS←ESM 방향에 제약.
+- **실무**: 순환 참조 회피, 신규 코드는 ESM 기본.

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Prototypes and the Object Model</title>
+  <meta name="description" content="Understand JavaScript prototype chains, Fn.prototype vs [[Prototype]], class sugar, shadowing, and prototype pollution defenses.">
+  <meta name="keywords" content="JavaScript prototypes, prototype chain, Object.create, class extends, prototype pollution">
+</head>
+<body>
+  <article>
+    <h1>Part 8: Prototype Chains and JavaScript’s Object Model</h1>
+    <p>Even with <code>class</code> syntax, JavaScript’s real model is <strong>prototype-based</strong>. Property lookup walks the prototype chain.</p>
+
+    <h2>1. Delegation via [[Prototype]]</h2>
+<pre><code>const animal = { eat() { return "yum"; } };
+const dog = Object.create(animal);
+dog.bark = () =&gt; "woof";
+dog.eat(); // found on prototype</code></pre>
+
+    <h2>2. Terminology</h2>
+    <ul>
+      <li><code>[[Prototype]]</code> — actual delegation target</li>
+      <li><code>__proto__</code> — legacy accessor</li>
+      <li><code>Fn.prototype</code> — becomes instance <code>[[Prototype]]</code> under <code>new</code></li>
+    </ul>
+<pre><code>Object.getPrototypeOf(p) === Person.prototype; // true</code></pre>
+
+    <h2>3. What new Does</h2>
+<pre><code>const instance = Object.create(Constructor.prototype);
+const result = Constructor.apply(instance, args);
+return (result &amp;&amp; typeof result === "object") ? result : instance;</code></pre>
+
+    <h2>4. class as Sugar</h2>
+<pre><code>class Dog extends Animal {
+  speak() { return `${this.name} barks`; }
+}
+Object.getPrototypeOf(Dog.prototype) === Animal.prototype; // true</code></pre>
+
+    <h2>5. Shadowing and Pollution Defenses</h2>
+    <p>Reads walk the chain; writes usually create own properties. For dictionaries, prefer <code>Map</code> or <code>Object.create(null)</code>.</p>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>Prototype-chain delegation is the core object model.</li>
+      <li><code>Fn.prototype</code> becomes instance <code>[[Prototype]]</code> under <code>new</code>.</li>
+      <li><code>class</code> wraps prototype linking in clearer syntax.</li>
+      <li>Writes typically shadow on the instance.</li>
+      <li>Defend against pollution with null-prototype objects or Map.</li>
+    </ul>
+  </article>
+</body>
+</html>

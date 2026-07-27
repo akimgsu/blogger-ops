@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ES Modules vs CommonJS: Differences and Practical Usage</title>
+  <meta name="description" content="Compare ESM and CommonJS: static vs dynamic loading, live bindings, circular dependencies, Node interop, and browser modules.">
+  <meta name="keywords" content="ES Modules, CommonJS, import export, require, tree shaking, Node.js modules">
+</head>
+<body>
+  <article>
+    <h1>Part 11: ES Modules (ESM) vs CommonJS</h1>
+    <p>ESM is the modern standard; CommonJS remains common in Node. Their loading and binding models differ in important ways.</p>
+
+    <h2>1. Quick Comparison</h2>
+    <ul>
+      <li>ESM: <code>import</code>/<code>export</code>, static by default, tree-shake friendly, browser-native</li>
+      <li>CJS: <code>require</code>/<code>module.exports</code>, synchronous, dynamic paths easy</li>
+    </ul>
+
+    <h2>2. Syntax</h2>
+<pre><code>export const PI = 3.14;
+export default function sum(list) { return list.reduce((a, b) =&gt; a + b, 0); }
+import sum, { PI } from "./math.js";
+
+module.exports = { add };
+const { add } = require("./math.cjs");</code></pre>
+
+    <h2>3. Live Bindings vs Snapshots</h2>
+<pre><code>export let count = 0;
+export function inc() { count += 1; }
+// ESM importers see live updates to count</code></pre>
+
+    <h2>4. Dynamic import and Node Interop</h2>
+<pre><code>const mod = await import(condition ? "./a.js" : "./b.js");
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);</code></pre>
+    <p>Use <code>"type": "module"</code>, <code>.mjs</code>, and <code>.cjs</code> to control formats. Prefer ESM for new code; avoid circular dependencies when possible.</p>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>ESM is the standard static module system; CJS is Node’s classic sync system.</li>
+      <li>ESM offers live bindings and better tree-shaking; use <code>import()</code> for dynamic loads.</li>
+      <li>CJS uses <code>require</code>/<code>module.exports</code> with more value-copy feel.</li>
+      <li>Node interop depends on <code>type</code>/<code>mjs</code>/<code>cjs</code>.</li>
+      <li>Avoid cycles; default new projects to ESM.</li>
+    </ul>
+  </article>
+</body>
+</html>

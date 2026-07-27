@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Coercion Pitfalls and Defensive Programming</title>
+  <meta name="description" content="Avoid JavaScript type coercion traps: truthy/falsy, == vs ===, ToPrimitive, Number quirks, and defensive validation with ?? and runtime schemas.">
+  <meta name="keywords" content="JavaScript coercion, == vs ===, truthy falsy, nullish coalescing, defensive programming, Number.isNaN">
+</head>
+<body>
+  <article>
+    <h1>Part 15: Coercion Pitfalls and Defensive Programming</h1>
+    <p>JavaScript often <strong>coerces</strong> values to fit an operation. Convenience hides sharp edges around <code>==</code>, <code>+</code>, and boolean contexts.</p>
+
+    <h2>1. Implicit vs Explicit</h2>
+<pre><code>1 + "2";          // "12" — implicit
+Number("2");      // 2 — explicit</code></pre>
+    <p>Don’t rely on implicit coercion at boundaries—convert explicitly.</p>
+
+    <h2>2. Truthy / Falsy and ==</h2>
+    <p>Falsy: <code>false</code>, <code>0</code>, <code>""</code>, <code>null</code>, <code>undefined</code>, <code>NaN</code>, <code>0n</code>. Arrays and objects are truthy.</p>
+<pre><code>const port = input ?? 3000; // only null/undefined
+0 == false; // true — prefer ===</code></pre>
+
+    <h2>3. + and Number Quirks</h2>
+<pre><code>"1" + 2;           // "12"
+Number("");        // 0
+Number(null);      // 0
+parseInt("12px", 10); // 12
+Number.isNaN(NaN); // true</code></pre>
+
+    <h2>4. Defensive Checklist</h2>
+<pre><code>function createUser(dto) {
+  if (dto == null || typeof dto !== "object") throw new TypeError("dto must be object");
+  const name = String(dto.name ?? "").trim();
+  const age = Number(dto.age);
+  if (!Number.isInteger(age) || age &lt; 0) throw new Error("invalid age");
+  return { name, age };
+}
+const city = user?.address?.city ?? "Unknown";</code></pre>
+    <p>Layer ESLint (<code>eqeqeq</code>), TypeScript, and runtime schemas (Zod/Valibot) for external input.</p>
+
+    <h2>5. Safe Habits</h2>
+    <ol>
+      <li>Compare with <code>===</code></li>
+      <li>Default nullish values with <code>??</code></li>
+      <li>Validate numbers with <code>Number.isFinite</code>/<code>isInteger</code></li>
+      <li>Don’t erase valid <code>0</code>/<code>""</code> with <code>||</code></li>
+    </ol>
+
+    <h2>Chapter Summary</h2>
+    <ul>
+      <li>JS coerces values to match operator/context needs.</li>
+      <li>Falsy includes <code>0</code>/<code>""</code>/<code>null</code>/<code>undefined</code>/<code>NaN</code>; <code>[]</code>/<code>{}</code> are truthy.</li>
+      <li>Default to <code>===</code>; many teams allow only <code>== null</code>.</li>
+      <li>Handle <code>+</code> and <code>Number</code>/<code>parseInt</code> explicitly at boundaries.</li>
+      <li>Defense is validation + <code>??</code>/<code>?.</code> + schemas + lint/types.</li>
+    </ul>
+  </article>
+</body>
+</html>

@@ -1,0 +1,5 @@
+- **Proxy**: target의 기본 연산을 trap으로 가로챔.
+- **Reflect**: 기본 동작을 함수로 위임하며 receiver 전달이 중요함.
+- **활용**: 검증, 로깅, 기본값, 반응형, 동적 API.
+- **함정**: identity/성능/trap 일관성/프라이빗 필드 제약.
+- **회수**: `Proxy.revocable`로 접근 권한을 회수할 수 있음.
