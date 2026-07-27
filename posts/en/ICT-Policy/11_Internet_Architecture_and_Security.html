@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Understand the End-to-End Argument, network encryption technologies like DoH and TLS 1.3, and IETF RFC 7258 regarding pervasive monitoring.">
+    <meta name="keywords" content="End-to-End Argument, DNS over HTTPS, Port 443, TLS 1.3, RFC 7258, RFC 8484, Internet Architecture, Cybersecurity">
+    <title>Week 11: Internet Architecture Principles and Network Security/Privacy</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }
+        h1, h2, h3 { color: #2c3e50; }
+        code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: "Courier New", Courier, monospace; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .summary-box { background: #e8f4f8; padding: 15px; border-radius: 5px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+    <h1>Week 11: Internet Architecture Principles and Network Security/Privacy</h1>
+
+    <p>Entering the final module (Part 4: Modern Digital Policy), we dive deep into the fundamental design philosophies of the internet and the pressing cybersecurity and privacy issues facing modern networks. Telecom policy has evolved beyond mere infrastructure expansion into the realm of protecting constitutional values and fundamental human rights.</p>
+
+    <hr>
+
+    <h2>1. The End-to-End Argument</h2>
+    <p>The most critical architectural principle that allowed the internet to become a global standard and drive limitless innovation is the <strong>End-to-End Argument</strong>.</p>
+    
+    <p>The core tenets of this principle are:</p>
+    <ul>
+        <li><strong>Network Simplicity</strong>: The network itself (routers, switches) should focus solely on simple <strong>packet forwarding</strong>, remaining as scalable and flexible as possible.</li>
+        <li><strong>Endpoint Intelligence</strong>: All the "intelligence"—error correction, security protocols, and application-specific business logic—must reside at the <strong>endpoints</strong> (smartphones, servers, PCs).</li>
+    </ul>
+    
+    <p>By preventing specific services or applications from being built directly into the internet's core design, the architecture remains adaptable. <br>
+    <em>(Exam Note: Asserting that "Network design should be optimized for streaming video" is inherently a violation of this principle, as it requires baking application-specific intelligence into the core network.)</em></p>
+
+    <hr>
+
+    <h2>2. Network Encryption and DNS Privacy (DoH, DoT)</h2>
+    <p>A major contemporary focus of internet governance is technological encryption designed to protect user traffic from mass surveillance.</p>
+    
+    <p>Hackers and state censors frequently monitor Domain Name System (DNS) queries to track which websites a user visits, as legacy DNS queries are sent in plaintext. To combat this, several technologies have been standardized:</p>
+    
+    <ul>
+        <li><strong>DoH (DNS over HTTPS)</strong>: Bypasses the traditional port 53 and encrypts DNS queries by wrapping them in standard web traffic protocols over <strong>Port 443</strong>, making them virtually indistinguishable from regular secure browsing.</li>
+        <li><strong>DoT (DNS over TLS)</strong>: Encapsulates DNS traffic over a dedicated secure port (Port 853).</li>
+        <li><strong>TLS 1.3</strong>: The latest iteration of the Transport Layer Security protocol, offering massively upgraded speeds and cryptographic security for modern internet traffic.</li>
+    </ul>
+
+    <hr>
+
+    <h2>3. IETF RFC Analysis: RFC 7258</h2>
+    <p>The rapid standardization of these aggressive encryption protocols was largely catalyzed by Edward Snowden's 2013 whistleblowing on the NSA's mass surveillance programs.</p>
+    
+    <p>In response, the Internet Engineering Task Force (IETF) published a historic declaration in 2014: <strong>RFC 7258, titled "Pervasive Monitoring is an Attack."</strong> This document explicitly defined mass state or corporate surveillance as an attack on the internet infrastructure itself. It mandated that all future internet protocols must incorporate strong encryption by default to mitigate this threat, standing as a prime example of using technical governance to protect civil liberties.</p>
+
+    <h3>💡 Key RFC Number Matching (Exam Prep)</h3>
+    <ul>
+        <li><strong>RFC 7258 (2014)</strong> &rarr; "Pervasive Monitoring is an Attack"</li>
+        <li><strong>RFC 7858 (2016)</strong> &rarr; DNS over TLS (DoT)</li>
+        <li><strong>RFC 8484 (2018)</strong> &rarr; DNS over HTTPS (DoH)</li>
+        <li><strong>RFC 8446 (2018)</strong> &rarr; Transport Layer Security 1.3 (TLS 1.3)</li>
+    </ul>
+
+    <hr>
+
+    <div class="summary-box">
+        <h2>Chapter Summary</h2>
+        <ul>
+            <li><strong>End-to-End Argument</strong>: Intelligence remains at the endpoints while the network handles simple packet forwarding. Optimizing networks specifically for streaming video violates this principle.</li>
+            <li><strong>DoH Port</strong>: DNS over HTTPS encrypts queries by bypassing Port 53 and routing them over <strong>Port 443</strong>.</li>
+            <li><strong>RFC 7258</strong>: The IETF officially designated pervasive monitoring as an attack on the network, paving the way for ubiquitous encryption standards like TLS 1.3 and DoH.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

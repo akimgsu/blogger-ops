@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about access competition, two-sided market platforms, and the mechanisms of standardization in telecommunications.">
+    <meta name="keywords" content="Access Competition, Two-Sided Market, Platform Business, Standardization, De Facto Standard, ICT Policy">
+    <title>Week 2: Forms of Competition and Standardization Mechanisms</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }
+        h1, h2, h3 { color: #2c3e50; }
+        code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: "Courier New", Courier, monospace; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .summary-box { background: #e8f4f8; padding: 15px; border-radius: 5px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+    <h1>Week 2: Forms of Competition and Standardization Mechanisms</h1>
+
+    <p>This week, we explore how companies compete in the telecommunications market and how they leverage technological 'Standards' as a weapon to secure interoperability. Because no single entity can monopolize the entire ICT ecosystem, it has become a fierce intellectual battlefield over compatibility and market dominance.</p>
+
+    <hr>
+
+    <h2>1. Access Competition and Network Duplication</h2>
+    <p>When early telecommunication markets or new platforms emerge, a scramble for subscribers frequently occurs between <strong>Incompatible Networks</strong>. This is referred to as <strong>Access Competition</strong>. Historical examples include different regional telephone operators in the early US market, or today's fragmented messenger apps (e.g., WhatsApp vs. Telegram) that do not interconnect.</p>
+
+    <p>So, is it economically rational to completely duplicate a user base across two networks? Yes, it can be. If each network offers a distinct user experience, unique security policies, or specialized features that create differentiated value, users will gladly accept dual subscriptions, thereby keeping the market viable.</p>
+
+    <hr>
+
+    <h2>2. Two-Sided Market Platform Structure</h2>
+    <p>The core business model defining the companies that dominate today's digital economy is the <strong>Two-Sided Market</strong>.</p>
+    <ul>
+        <li><strong>Traditional Pipeline Business</strong>: Equipment manufacturers like Cisco Systems build routers or switches and sell them directly to customers in a one-way (B2B) fashion.</li>
+        <li><strong>Two-Sided Platforms</strong>: Businesses like the iOS App Store, Uber, or Airbnb connect two distinct user groups (e.g., developers and users, drivers and riders). As one group grows, the value provided to the other group increases—a dynamic known as cross-network externalities.</li>
+    </ul>
+
+    <h3>💻 Python Code Example: Platform Subsidization Logic</h3>
+    <p>Two-sided platforms often offer their services for free to one side (e.g., general users) to rapidly build a user base, while charging fees to the other side (e.g., advertisers or sellers).</p>
+<pre><code>class TwoSidedPlatform:
+    def __init__(self):
+        self.consumers = 0
+        self.producers = 0
+    
+    def price_structure(self, consumer_fee, producer_fee):
+        """
+        Calculates expected platform revenue and ecosystem growth.
+        Subsidizing consumers usually drives producer growth.
+        """
+        # A simple theoretical model where consumer volume is inversely proportional to fee
+        self.consumers = max(0, 1000 - (consumer_fee * 100))
+        # Producers join based on the number of consumers minus their own fee
+        self.producers = max(0, (self.consumers * 0.5) - (producer_fee * 50))
+        
+        revenue = (self.consumers * consumer_fee) + (self.producers * producer_fee)
+        return self.consumers, self.producers, revenue
+
+platform = TwoSidedPlatform()
+# Scenario A: Charging both sides equally
+c1, p1, rev1 = platform.price_structure(consumer_fee=5, producer_fee=5)
+print(f"Scenario A (Equal Fee) -> Consumers: {c1}, Producers: {p1}, Revenue: ${rev1}")
+
+# Scenario B: Free for consumers, charge producers (Classic Platform Strategy)
+c2, p2, rev2 = platform.price_structure(consumer_fee=0, producer_fee=10)
+print(f"Scenario B (Subsidized) -> Consumers: {c2}, Producers: {p2}, Revenue: ${rev2}")
+</code></pre>
+
+    <hr>
+
+    <h2>3. Definition and Purpose of a Standard</h2>
+    <p>A <strong>Standard</strong> is a set of specifications or requirements that guide the design and operation of technical systems. There is a common misconception that enforcing standards stifles product innovation. However, in the telecom market, the primary purpose of a standard is not to hinder innovation, but to <strong>guarantee market compatibility and drive exponential expansion</strong>.</p>
+    <p>Just as uniform electrical plugs allow appliances to be used anywhere, telecommunication protocols must be standardized so that global hardware can seamlessly interconnect, unlocking massive network externalities.</p>
+
+    <hr>
+
+    <h2>4. The Four Modes of Standardization</h2>
+    <p>The process by which a market converges on a single standard generally falls into four categories:</p>
+    <ol>
+        <li><strong>Collective Development Process</strong>: Key players (companies, academia, governments) convene in a committee or working group to forge a standard through consensus (e.g., 3GPP, IEEE).</li>
+        <li><strong>Proprietary Standard</strong>: A single firm develops a technology and asserts strict intellectual property (IP) rights to control it exclusively.</li>
+        <li><strong>De facto Standard</strong>: A standard that bypassed formal standardization procedures but organically achieved market dominance, forcing the industry to converge on it (e.g., Microsoft Windows, the QWERTY keyboard).</li>
+        <li><strong>Competing Standards</strong>: Multiple standards sponsored by different factions fiercely battle for dominance in the market (e.g., the historical VHS vs. Betamax format war, or CDMA vs. GSM in early mobile networks).</li>
+    </ol>
+
+    <hr>
+
+    <div class="summary-box">
+        <h2>Chapter Summary</h2>
+        <ul>
+            <li><strong>Access Competition and Duplication</strong>: Competition among incompatible networks can lead to user-base battles, but complete network duplication is economically rational if they offer unique values.</li>
+            <li><strong>Two-Sided Markets</strong>: Platform models that connect producers and consumers generate value fundamentally differently from hardware-only vendors like Cisco.</li>
+            <li><strong>Purpose of Standards</strong>: They act as essential tools to maximize market size through interoperability, rather than constraints on innovation.</li>
+            <li><strong>Four Modes of Standardization</strong>: Convergence occurs via collective agreement, proprietary IP, de facto market victory, or fierce standard competition.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

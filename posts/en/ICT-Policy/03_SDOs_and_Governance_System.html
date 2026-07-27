@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore Standards Development Organizations (SDOs) like 3GPP, IETF, IEEE, and ITU, and understand the 'Rough consensus and running code' philosophy of Internet governance.">
+    <meta name="keywords" content="SDO, 3GPP, IETF, IEEE, ITU, TLS, WiFi, X.509, Rough Consensus, Running Code, Internet Governance">
+    <title>Week 3: Standards Development Organizations (SDOs) and Global Governance</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }
+        h1, h2, h3 { color: #2c3e50; }
+        code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: "Courier New", Courier, monospace; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .summary-box { background: #e8f4f8; padding: 15px; border-radius: 5px; margin-top: 30px; }
+        blockquote { border-left: 4px solid #2c3e50; padding-left: 15px; color: #555; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <h1>Week 3: Standards Development Organizations (SDOs) and Global Governance</h1>
+
+    <p>In the previous chapters, we learned why standards are absolutely essential in the telecommunications ecosystem. This week, we will explore exactly <em>who</em> establishes these standards and <em>how</em> they do it, focusing on <strong>Standards Development Organizations (SDOs)</strong> and their underlying governance philosophies.</p>
+
+    <hr>
+
+    <h2>1. SDO Classification: Global vs. National, Public vs. Private</h2>
+    <p>SDOs can be categorized into four broad quadrants based on their geographical scope (National vs. Global) and their primary driving force (Public vs. Private sector).</p>
+    
+    <ol>
+        <li><strong>Global, Private Sector</strong>: International corporate alliances driving technological specifications. 
+            <br><em>Example:</em> <strong>3GPP</strong> (3rd Generation Partnership Project) - Establishes global mobile telecommunication standards.</li>
+        <li><strong>Global, Public Sector</strong>: Operating through international treaties or intergovernmental organizations.
+            <br><em>Example:</em> <strong>IEC</strong> (International Electrotechnical Commission).</li>
+        <li><strong>National, Public Sector</strong>: Government-led entities controlling technological specifications within a specific country.
+            <br><em>Example:</em> <strong>CCSA</strong> (China Communications Standards Association).</li>
+        <li><strong>National, Private Sector</strong>: Industry alliances or corporate consortiums operating within a nation.
+            <br><em>Example:</em> <strong>ATIS</strong> (Alliance for Telecommunications Industry Solutions).</li>
+    </ol>
+
+    <hr>
+
+    <h2>2. Matching Core Technology Standards with their SDOs</h2>
+    <p>The core telecommunications technologies we use every day were developed by highly specialized SDOs. The following matching is essential for both exams and practical knowledge:</p>
+    <ul>
+        <li><strong>Transport Layer Security (TLS)</strong> &rarr; <strong>IETF</strong> (Internet Engineering Task Force): The core of Internet traffic encryption.</li>
+        <li><strong>WiFi (802.11)</strong> &rarr; <strong>IEEE</strong> (Institute of Electrical and Electronics Engineers): The standard for short-range wireless LANs.</li>
+        <li><strong>X.509 Certificates</strong> &rarr; <strong>ITU</strong> (International Telecommunication Union): The standard format for Public Key Infrastructure (PKI) security certificates.</li>
+        <li><strong>Mobile Radio Access</strong> &rarr; <strong>3GPP</strong>: Cellular networking protocols such as LTE and 5G.</li>
+    </ul>
+
+    <h3>💻 JSON Code Example: Standard & SDO Mapping</h3>
+    <p>If you were to implement this standard-to-organization mapping in a simple configuration file or data model, it might look like this:</p>
+<pre><code>{
+  "standards_registry": {
+    "TLS": {
+      "full_name": "Transport Layer Security",
+      "sdo": "IETF",
+      "domain": "Internet Security"
+    },
+    "WiFi": {
+      "full_name": "IEEE 802.11",
+      "sdo": "IEEE",
+      "domain": "Wireless LAN"
+    },
+    "X.509": {
+      "full_name": "X.509 Public Key Certificates",
+      "sdo": "ITU",
+      "domain": "Cryptography"
+    },
+    "Radio_Access": {
+      "full_name": "Mobile Radio Access Network (RAN)",
+      "sdo": "3GPP",
+      "domain": "Cellular Network"
+    }
+  }
+}
+</code></pre>
+
+    <hr>
+
+    <h2>3. Internet Architecture and the IETF's Governance Philosophy</h2>
+    <p>Unlike traditional telecommunication organizations (e.g., ITU) that rely on bureaucratic consensus processes and rigid voting among nation-states, the <strong>IETF</strong>—which built the modern Internet—adopted a radically different governance philosophy.</p>
+    
+    <p>The famous manifesto that represents the IETF's core ethos is:</p>
+    <blockquote>
+        "We reject kings, presidents, and voting. We believe in <strong>rough consensus and running code</strong>."
+    </blockquote>
+    
+    <p><strong>"Rough consensus and running code"</strong> means that rather than seeking perfect, theoretical consensus on paper, the community prioritizes practical, agile technology implementations that a strong majority agrees upon and that actually work in the real world. Thanks to this pragmatic, bottom-up governance approach, Internet infrastructure was able to adapt incredibly fast to explosive global growth.</p>
+
+    <hr>
+
+    <div class="summary-box">
+        <h2>Chapter Summary</h2>
+        <ul>
+            <li><strong>SDO Classification Matrix</strong>: Organizations are segmented by scope and sector, yielding bodies like 3GPP (Global/Private), IEC (Global/Public), CCSA (National/Public), and ATIS (National/Private).</li>
+            <li><strong>Core Standard Matching</strong>: TLS is managed by IETF, WiFi by IEEE, X.509 by ITU, and Mobile Radio Access by 3GPP.</li>
+            <li><strong>IETF Governance Philosophy</strong>: Rejecting rigid bureaucracy and voting in favor of the highly pragmatic principle of <strong>"Rough consensus and running code"</strong> to evolve Internet standards rapidly.</li>
+        </ul>
+    </div>
+
+</body>
+</html>
