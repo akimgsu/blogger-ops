@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Data Integration and RAG (Retrieval-Augmented Generation) in AI. Learn how to connect LLMs to internal Knowledge Bases and Vector Databases securely.">
+    <meta name="keywords" content="AI, RAG, Retrieval-Augmented Generation, Knowledge Base, Vector Database, Embeddings, LLM Security, Access Control">
+    <title>Phase 3: Data Integration & RAG | Tech Insights</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #2980b9; margin-top: 30px; }
+        h3 { color: #16a085; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; border: 1px solid #ddd; }
+        code { font-family: 'Courier New', Courier, monospace; color: #c7254e; }
+        pre code { color: #333; }
+        .summary-box { background-color: #e8f6f3; padding: 20px; border-left: 5px solid #1abc9c; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <h1>Phase 3: Data Integration & RAG</h1>
+    
+    <p>LLMs are inherently frozen in time after their training ends and have no intrinsic access to your company's private data. This chapter explores the practical methodologies for securely connecting AI to real-time information and internal databases (like ORDS) to maximize response accuracy.</p>
+
+    <h2>1. Knowledge Base</h2>
+    <p>A Knowledge Base serves as the repository of data that the AI can reference to answer queries. This can include structured and unstructured data ranging from company manuals and policy documents to specific database records.</p>
+    <p>For an AI to search this data rapidly and accurately, the text must be translated into a format the machine inherently understands: <strong>Vectors</strong>.</p>
+
+    <h3>Embeddings and Vector Databases</h3>
+    <p>The process of converting textual data into multi-dimensional numeric arrays is called <strong>Embedding</strong>. Through embeddings, sentences with similar semantic meanings are placed closely together within a Vector Space.</p>
+    <p>A <strong>Vector Database</strong> is specialized software designed to store these massive vectors and perform lightning-fast similarity searches to find contextually relevant information.</p>
+
+    <h2>2. RAG (Retrieval-Augmented Generation)</h2>
+    <p>RAG is currently the industry-standard architecture for mitigating LLM hallucination and forcing the model to base its answers on proprietary or up-to-date data.</p>
+    
+    <p>Here is how the RAG pipeline operates:</p>
+    <ol>
+        <li><strong>Retrieval</strong>: When a user asks a question, the system converts the query into a vector and searches the Knowledge Base (Vector DB) for the most semantically relevant documents.</li>
+        <li><strong>Augmented</strong>: The retrieved document contexts are combined with the user's original query (augmenting the prompt) and sent to the LLM.</li>
+        <li><strong>Generation</strong>: The LLM processes the augmented prompt to generate a highly accurate, grounded response based <em>only</em> on the injected context.</li>
+    </ol>
+
+    <h3>Security and Access Control</h3>
+    <p>When deploying RAG in an enterprise environment, <strong>security and Access Control</strong> are paramount. Different departments and roles require different clearance levels. It is critical to design the architecture so that the <em>Retrieval</em> phase strictly respects user permissions—ensuring unauthorized documents are never retrieved and thus never fed to the LLM.</p>
+
+<pre><code># Simplified RAG Pipeline Example using LangChain
+from langchain.chains import RetrievalQA
+from langchain.llms import OpenAI
+from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+
+# 1. Setup Embeddings and Vector DB (Knowledge Base)
+embeddings = OpenAIEmbeddings()
+vectordb = Chroma(persist_directory="./db", embedding_function=embeddings)
+
+# 2. Configure the Retriever
+retriever = vectordb.as_retriever(search_kwargs={"k": 3}) # Retrieve top 3 documents
+
+# 3. Initialize LLM and construct RAG Chain
+llm = OpenAI(temperature=0)
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm, 
+    chain_type="stuff", 
+    retriever=retriever
+)
+
+# 4. Execute user query (Query -> Retrieve -> Augment -> Generate)
+query = "What is the maximum healthcare reimbursement limit in our company policy?"
+response = qa_chain.run(query)
+print(response)
+</code></pre>
+
+    <div class="summary-box">
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li><strong>Knowledge Base</strong>: The external repository of data for AI referencing. Text is converted into mathematical <strong>Vectors</strong> (Embedding) for storage.</li>
+            <li><strong>RAG (Retrieval-Augmented Generation)</strong>: An architecture that drastically improves accuracy by searching a Vector DB for relevant context (Retrieval) before synthesizing an answer (Generation).</li>
+            <li><strong>Data Security</strong>: Enterprise RAG implementations must integrate strict <strong>Access Control</strong> during the retrieval phase to prevent data leakage to unauthorized users.</li>
+        </ul>
+    </div>
+
+</body>
+</html>
