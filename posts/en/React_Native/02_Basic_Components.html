@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master the core components of React Native. Learn why HTML tags don't work, and how to use View, Text, and TextInput to build native mobile layouts.">
+    <meta name="keywords" content="React Native, Core Components, View, Text, TextInput, Mobile UI, React Native Tutorial, UI Components">
+    <title>Understanding Core Components (View, Text, TextInput) | Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+        p { margin-bottom: 15px; }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+        }
+        pre code {
+            color: #212529;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #f1f8ff;
+            margin: 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        .summary {
+            background-color: #e8f6f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <article>
+        <h1>02. Understanding Core Components (View, Text, TextInput)</h1>
+        
+        <p>Welcome back to the world of React Native (RN)! Previously, we looked at how RN converts JavaScript code into native mobile apps. Today, we're going to dive deep into the fundamental building blocks that make up your app's screens: <strong>Core Components</strong>.</p>
+
+        <h2>1. Why You Can't Use Standard HTML Tags</h2>
+        <p>If you're accustomed to web development, you're likely used to grouping things with <code>&lt;div&gt;</code>, writing text inside <code>&lt;span&gt;</code> or <code>&lt;p&gt;</code>, and taking user input via <code>&lt;input&gt;</code>. However, in React Native, <strong>you cannot use these standard HTML tags.</strong></p>
+        
+        <p>Why is that? As we learned in the previous module, RN doesn't spin up a web browser. Instead, it maps directly to pure native UI on mobile devices. This means that instead of HTML, which browsers understand, we must use specific "dedicated components" that iOS and Android can interpret.</p>
+
+        <blockquote>
+            <p>💡 <strong>Core Metaphor: "Standardized Lego Blocks"</strong><br>
+            If web development is like freely painting on a blank canvas, mobile app development with RN is like building with <strong>Lego blocks</strong> of specific sizes. Instead of web tags, RN provides dedicated Lego blocks (Core Components) that are perfectly tailored for mobile.</p>
+        </blockquote>
+
+        <h2>2. RN Core Component Mapping Guide</h2>
+        <p>Let's take a look at a table showing how the web tags you know translate into RN components.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Web (HTML)</th>
+                    <th>React Native</th>
+                    <th>Role</th>
+                    <th>Native Mapping (iOS / Android)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>&lt;div&gt;</code></td>
+                    <td><strong><code>&lt;View&gt;</code></strong></td>
+                    <td>Container for UI, layout structure</td>
+                    <td><code>UIView</code> / <code>ViewGroup</code></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;p&gt;</code>, <code>&lt;span&gt;</code></td>
+                    <td><strong><code>&lt;Text&gt;</code></strong></td>
+                    <td>Displays text on screen</td>
+                    <td><code>UITextView</code> / <code>TextView</code></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;input&gt;</code></td>
+                    <td><strong><code>&lt;TextInput&gt;</code></strong></td>
+                    <td>Receives text input from the user</td>
+                    <td><code>UITextField</code> / <code>EditText</code></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;img&gt;</code></td>
+                    <td><strong><code>&lt;Image&gt;</code></strong></td>
+                    <td>Displays an image</td>
+                    <td><code>UIImageView</code> / <code>ImageView</code></td>
+                </tr>
+                <tr>
+                    <td><code>&lt;button&gt;</code></td>
+                    <td><strong><code>&lt;Button&gt;</code></strong>, <code>&lt;TouchableOpacity&gt;</code></td>
+                    <td>Handles click/touch events</td>
+                    <td><code>UIButton</code> / <code>Button</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>A Closer Look at Core Components</h3>
+        <ol>
+            <li><strong><code>&lt;View&gt;</code></strong>: The most fundamental block. It acts as a container to hold other components and is essential for building layouts using CSS flexbox.</li>
+            <li><strong><code>&lt;Text&gt;</code></strong>: In RN, every single string of text <em>must</em> be wrapped inside a <code>&lt;Text&gt;</code> component. Writing text directly inside a <code>&lt;View&gt;</code> will throw an error!</li>
+            <li><strong><code>&lt;TextInput&gt;</code></strong>: Used when you need to capture user input, such as a password or a search query.</li>
+        </ol>
+
+        <h2>3. Practice: Publishing a Profile Card UI</h2>
+        <p>Based on what we've learned, let's build a simple Profile Card UI.</p>
+
+        <pre><code>import React from 'react';
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
+
+export default function ProfileCard() {
+  return (
+    &lt;View style={styles.container}&gt;
+      {/* Profile Image (Using a placeholder URL) */}
+      &lt;Image 
+        source={{ uri: 'https://via.placeholder.com/100' }} 
+        style={styles.profileImage} 
+      /&gt;
+      
+      {/* User Name and Status (Using Text component) */}
+      &lt;Text style={styles.name}&gt;Developer John Doe&lt;/Text&gt;
+      &lt;Text style={styles.bio}&gt;Mastering React Native! 🚀&lt;/Text&gt;
+
+      {/* Status Update Area (Using TextInput) */}
+      &lt;TextInput 
+        style={styles.input} 
+        placeholder="Update your status message." 
+      /&gt;
+
+      {/* Button Area (Using TouchableOpacity) */}
+      &lt;TouchableOpacity style={styles.button}&gt;
+        &lt;Text style={styles.buttonText}&gt;Save&lt;/Text&gt;
+      &lt;/TouchableOpacity&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    alignItems: 'center',
+    margin: 20,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 15,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  bio: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 15,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  }
+});</code></pre>
+
+        <p>If you run the code above, you'll see a polished profile card appear on the screen, structured with a <code>&lt;View&gt;</code>, displaying a picture via <code>&lt;Image&gt;</code>, rendering words with <code>&lt;Text&gt;</code>, and accepting input through <code>&lt;TextInput&gt;</code>.</p>
+        
+        <div class="summary">
+            <h3>Chapter Summary</h3>
+            <ul>
+                <li><strong>No HTML Tags</strong>: Because RN builds native apps, you cannot use web markup languages like HTML (e.g., <code>&lt;div&gt;</code>, <code>&lt;span&gt;</code>).</li>
+                <li><strong>Component Mapping</strong>: Replace <code>&lt;div&gt;</code> with <code>&lt;View&gt;</code>, text containers with <code>&lt;Text&gt;</code>, and input fields with <code>&lt;TextInput&gt;</code>.</li>
+                <li><strong>Mobile-Optimized Assembly</strong>: By utilizing these provided "standardized Lego blocks," you can safely construct a native UI optimized for the mobile environment.</li>
+            </ul>
+        </div>
+    </article>
+
+</body>
+</html>

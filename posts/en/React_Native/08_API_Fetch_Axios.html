@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to fetch data from APIs in React Native. Understand asynchronous programming, Promises, async/await, and how to display external data in your app.">
+    <meta name="keywords" content="React Native, API, Fetch, Axios, Asynchronous, async, await, OpenWeather, Data Fetching">
+    <title>Fetching External Data (Fetch / Axios API) | Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+        p { margin-bottom: 15px; }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+        }
+        pre code {
+            color: #212529;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #f1f8ff;
+            margin: 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+        .summary {
+            background-color: #e8f6f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <article>
+        <h1>08. Fetching External Data (Fetch / Axios API)</h1>
+        
+        <p>Most apps we use today don't operate in isolation. YouTube fetches a list of videos, and WhatsApp receives messages. The process of communicating with a server to exchange data is absolutely essential in app development. Today, we'll explore <strong>API Communication</strong> and <strong>Asynchronous Processing</strong> to pull in external data.</p>
+
+        <h2>1. Understanding Synchronous vs. Asynchronous</h2>
+        <p>Fetching data from a server takes time, depending on internet speed and server status. If your app froze (synchronous processing) while waiting for data, preventing the user from tapping anything, it would be a terrible user experience.</p>
+        
+        <p>To solve this, JavaScript uses an <strong>Asynchronous</strong> approach.</p>
+
+        <blockquote>
+            <p>💡 <strong>Core Metaphor: "The Restaurant Waiter"</strong><br>
+            - <strong>Synchronous</strong>: A waiter takes your order to the kitchen (server) and stands there blocking the door until your food (data) is ready. You sit there doing nothing.<br>
+            - <strong>Asynchronous</strong>: The waiter drops the order in the kitchen and <strong>immediately goes to serve other tables or clean up.</strong> When the chef calls out that the food is ready, the waiter brings it to your table.</p>
+        </blockquote>
+
+        <p>In your app, you request data (<code>fetch</code>) from the server. The app doesn't stop; it continues rendering the screen and handling other tasks. When the data arrives (the <code>Promise</code> resolves), it updates the screen with the new data. We use the <code>async</code> and <code>await</code> keywords to write this code cleanly.</p>
+
+        <h2>2. Practice: Fetching Weather Data via OpenWeather API</h2>
+        <p>Let's use the built-in <code>fetch</code> function to pull weather data for Seoul from the free OpenWeather API and display it. <em>(Note: In a real environment, you need your own API Key.)</em></p>
+
+        <pre><code>import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+
+export default function WeatherApp() {
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch data exactly once when the component mounts
+  useEffect(() =&gt; {
+    getWeather();
+  }, []);
+
+  // Asynchronous function to call the API (using the 'async' keyword)
+  const getWeather = async () =&gt; {
+    try {
+      // Fetch data (the waiter places the order and waits for the response using 'await')
+      // *Note: Replace with a valid URL and API key in a real app.
+      const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=Seoul&appid=YOUR_API_KEY');
+      
+      // Convert the response data to JSON format
+      const json = await response.json();
+      
+      // Save the fetched data into State
+      setWeather(json);
+    } catch (error) {
+      console.error('Failed to fetch weather data:', error);
+    } finally {
+      // Whether successful or failed, set loading to false
+      setLoading(false);
+    }
+  };
+
+  return (
+    &lt;View style={styles.container}&gt;
+      {/* Show a spinning loading indicator until the data arrives */}
+      {loading ? (
+        &lt;ActivityIndicator size="large" color="#0000ff" /&gt;
+      ) : (
+        &lt;View style={styles.weatherBox}&gt;
+          &lt;Text style={styles.city}&gt;City: {weather?.name || 'Seoul'}&lt;/Text&gt;
+          &lt;Text style={styles.temp}&gt;
+            {/* Mock conversion from Kelvin to Celsius */}
+            Temp: { weather?.main?.temp ? (weather.main.temp - 273.15).toFixed(1) : '22.5' }°C
+          &lt;/Text&gt;
+          &lt;Text style={styles.desc}&gt;
+            Status: {weather?.weather[0]?.main || 'Clear'}
+          &lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f8ff' },
+  weatherBox: { alignItems: 'center', padding: 20, backgroundColor: 'white', borderRadius: 10, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10 },
+  city: { fontSize: 24, fontWeight: 'bold' },
+  temp: { fontSize: 30, color: '#ff4500', marginVertical: 10 },
+  desc: { fontSize: 20, color: '#555' }
+});</code></pre>
+
+        <p>In this code, <code>useEffect</code> triggers the asynchronous <code>getWeather</code> function as soon as the app turns on. While waiting for the data, an <code>ActivityIndicator</code> (loading spinner) is shown. Once the communication completes (the <code>await</code> finishes), the State updates, and the actual weather information is drawn on the screen.</p>
+
+        <p><em>(Pro tip: In real-world applications, developers often use an external library called <code>axios</code> instead of <code>fetch</code> because it provides convenient features like automatic JSON conversion.)</em></p>
+        
+        <div class="summary">
+            <h3>Chapter Summary</h3>
+            <ul>
+                <li><strong>Asynchronous Communication</strong>: A method that prevents the app from freezing while waiting for data (the waiter metaphor). Implemented using <code>async</code> and <code>await</code> syntax.</li>
+                <li><strong>API Integration</strong>: Using <code>fetch</code> or <code>axios</code> to request data from an external server (API) and receiving the result (usually as JSON).</li>
+                <li><strong>Loading States</strong>: Utilizing a <code>loading</code> State to display a spinner while data is being fetched, significantly improving the user experience.</li>
+            </ul>
+        </div>
+    </article>
+
+</body>
+</html>

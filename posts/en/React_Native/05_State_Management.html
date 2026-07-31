@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn React Native state management using the useState hook. Understand how State causes re-renders and build a real-time counter and text input app.">
+    <meta name="keywords" content="React Native, State, useState, Hooks, Re-rendering, State Management, UI Updates">
+    <title>State Management (State and useState) | Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+        p { margin-bottom: 15px; }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+        }
+        pre code {
+            color: #212529;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #f1f8ff;
+            margin: 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+        .summary {
+            background-color: #e8f6f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <article>
+        <h1>05. State Management (State and useState)</h1>
+        
+        <p>In our previous session, we learned about <strong>Props</strong>, which is 'unchanging' data inherited from a parent. Today, we're diving into <strong>State</strong>, which is data that can 'change itself' from within a component. State and the <code>useState</code> hook are absolutely essential concepts for making your app interactive.</p>
+
+        <h2>1. What is State and Why Do We Need It?</h2>
+        <p><strong>State</strong> is data that a component holds and manages on its own. 
+        As you use an app, the data visible on the screen constantly changes: numbers go up, text gets typed, checkboxes get toggled. If you change a standard variable (e.g., <code>let count = 0;</code>), will the screen automatically update? <strong>No.</strong> React does not re-draw the screen when standard variables change.</p>
+        
+        <p>To force the screen to re-draw (re-render), you must notify React that a value has changed. This is precisely what <strong>State</strong> does. When a State value changes, React immediately refreshes the UI based on that new data.</p>
+
+        <blockquote>
+            <p>💡 <strong>Core Metaphor: "The Chameleon's Mood"</strong><br>
+            If Props are inherited 'DNA', then State is like a chameleon's <strong>'mood'</strong>. A chameleon autonomously alters its skin color (UI) in real-time depending on its environment or mood. Similarly, when a component's State (mood) changes, it automatically changes its screen (color).</p>
+        </blockquote>
+
+        <h2>2. How to Use the useState Hook</h2>
+        <p>To create State in React Native, we use a React function (Hook) called <code>useState</code>.</p>
+
+        <pre><code>import React, { useState } from 'react';
+
+// Extracting values using array destructuring
+const [count, setCount] = useState(0); 
+</code></pre>
+
+        <ul>
+            <li><strong><code>useState(0)</code></strong>: The <code>0</code> inside the parentheses is the <strong>initial value</strong> of the State.</li>
+            <li><strong><code>count</code></strong>: The <strong>variable</strong> holding the current State value.</li>
+            <li><strong><code>setCount</code></strong>: The <strong>function</strong> used to update the State value. (You <em>must</em> use this function to change the value if you want the screen to update!)</li>
+        </ul>
+
+        <h2>3. Practice: Number Counter and Real-time Text Mini App</h2>
+        <p>Let's use State to build a mini app where clicking a button increases a number, and typing in a box instantly mirrors the text on the screen.</p>
+
+        <pre><code>import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+
+export default function StateApp() {
+  // 1. State for managing the number (Initial value: 0)
+  const [count, setCount] = useState(0);
+  
+  // 2. State for managing the typed text (Initial value: empty string)
+  const [text, setText] = useState('');
+
+  return (
+    &lt;View style={styles.container}&gt;
+      
+      {/* Counter Section */}
+      &lt;View style={styles.section}&gt;
+        &lt;Text style={styles.title}&gt;Number Counter&lt;/Text&gt;
+        &lt;Text style={styles.countText}&gt;{count}&lt;/Text&gt;
+        
+        {/* Using setCount to increase count by 1 */}
+        &lt;TouchableOpacity 
+          style={styles.button} 
+          onPress={() =&gt; setCount(count + 1)}
+        &gt;
+          &lt;Text style={styles.buttonText}&gt;+ Increase by 1&lt;/Text&gt;
+        &lt;/TouchableOpacity&gt;
+      &lt;/View&gt;
+
+      &lt;View style={styles.divider} /&gt;
+
+      {/* Text Input Section */}
+      &lt;View style={styles.section}&gt;
+        &lt;Text style={styles.title}&gt;Real-time Text Mirror&lt;/Text&gt;
+        
+        {/* onChangeText fires on every keystroke, updating the text State */}
+        &lt;TextInput 
+          style={styles.input} 
+          placeholder="Type something here..."
+          onChangeText={(inputText) =&gt; setText(inputText)} 
+        /&gt;
+        
+        {/* The screen immediately re-draws whenever the text State changes */}
+        &lt;Text style={styles.mirrorText}&gt;You typed: {text}&lt;/Text&gt;
+      &lt;/View&gt;
+
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  section: {
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  countText: {
+    fontSize: 40,
+    color: '#007AFF',
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 15,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#ddd',
+    marginVertical: 30,
+  },
+  input: {
+    width: '100%',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  mirrorText: {
+    fontSize: 16,
+    color: '#555',
+  }
+});</code></pre>
+
+        <p>If you run this code, you will see the number go up every time you press the button, and the text below the input box change in real-time as you type on the keyboard. This is the sheer power of triggering screen updates (Re-rendering) via State!</p>
+        
+        <div class="summary">
+            <h3>Chapter Summary</h3>
+            <ul>
+                <li><strong>What is State?</strong>: Dynamic data that a component independently manages and updates internally.</li>
+                <li><strong>Re-rendering</strong>: Unlike normal variables, when a State value is modified (via <code>setState</code>), React detects the change and freshly re-draws the UI.</li>
+                <li><strong>useState Hook</strong>: Used in the format <code>const [valueVar, modifierFunc] = useState(initialValue);</code>. You must safely update the value strictly through the modifier function.</li>
+            </ul>
+        </div>
+    </article>
+
+</body>
+</html>

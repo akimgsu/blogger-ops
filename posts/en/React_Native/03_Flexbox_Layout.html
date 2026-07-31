@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to build responsive mobile layouts in React Native using Flexbox and StyleSheet. Understand why the default flex direction is column and build an Instagram-style feed.">
+    <meta name="keywords" content="React Native, Flexbox, StyleSheet, Mobile Layout, Responsive Design, CSS in JS, App Development">
+    <title>Mobile Layouts and Flexbox (StyleSheet) | Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+        p { margin-bottom: 15px; }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+        }
+        pre code {
+            color: #212529;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #f1f8ff;
+            margin: 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+        .summary {
+            background-color: #e8f6f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <article>
+        <h1>03. Mobile Layouts and Flexbox (StyleSheet)</h1>
+        
+        <p>To arrange and style UI components in React Native, you must fully grasp its layout system. Today, we'll explore <strong>Flexbox</strong> and <strong>StyleSheet</strong>, the core tools for constructing screens in mobile apps.</p>
+
+        <h2>1. Differences Between CSS and RN StyleSheet</h2>
+        <p>In web development, we use CSS (Cascading Style Sheets) to style elements. React Native uses a similar approach, but you cannot simply copy and paste CSS code. Instead, we use the <strong>StyleSheet API</strong>, which defines styles as JavaScript objects.</p>
+        
+        <p>Here are the key differences:</p>
+        <ul>
+            <li><strong>CamelCase</strong>: Properties like <code>background-color</code> in CSS become <code>backgroundColor</code> in RN (using capitalization instead of hyphens).</li>
+            <li><strong>No Units</strong>: Most dimensions (width, height, padding, etc.) are entered as numbers without units (like px). These numbers automatically translate to density-independent pixels (dp) on mobile screens.</li>
+            <li><strong>StyleSheet.create()</strong>: We use this built-in method to cache style objects, which improves rendering performance.</li>
+        </ul>
+
+        <h2>2. The Mobile Essential: Flexbox</h2>
+        <p>Mobile devices come in all shapes and sizes. From small smartphones to wide tablets, your UI needs to look good and avoid breaking on any screen. The solution to this is <strong>Flexbox</strong>.</p>
+
+        <blockquote>
+            <p>💡 <strong>Core Metaphor: "Bento Box Dividers"</strong><br>
+            Flexbox doesn't lock elements into hard-coded pixels. Instead, it acts like flexible <strong>bento box dividers</strong> that smoothly stretch and shrink, automatically adjusting proportions based on the available screen real estate.</p>
+        </blockquote>
+
+        <h3>RN Flexbox Default Direction (Column)</h3>
+        <p>In standard web CSS, the default <code>flex-direction</code> is horizontal (<code>row</code>). However, <strong>in React Native, the default direction is vertical (<code>column</code>).</strong></p>
+        <p>Why? Because the smartphones we use are vertically oriented. Stacking elements from top to bottom is the most natural flow for a mobile UI.</p>
+
+        <h3>Top 3 Flexbox Properties</h3>
+        <ol>
+            <li><strong><code>flex</code></strong>: Determines the proportion of space an element takes up. Setting <code>flex: 1</code> makes it consume all remaining available space.</li>
+            <li><strong><code>justifyContent</code></strong>: Aligns elements along the primary axis (e.g., <code>center</code>, <code>space-between</code>).</li>
+            <li><strong><code>alignItems</code></strong>: Aligns elements along the cross axis.</li>
+        </ol>
+
+        <h2>3. Practice: Building an Instagram-Style Responsive Layout</h2>
+        <p>Let's use Flexbox to create an Instagram-style feed layout featuring a top header, an image area, and a bottom action bar.</p>
+
+        <pre><code>import React from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
+
+export default function FeedPost() {
+  return (
+    &lt;View style={styles.cardContainer}&gt;
+      
+      {/* 1. Top Header Area (Row alignment) */}
+      &lt;View style={styles.header}&gt;
+        &lt;Image source={{ uri: 'https://via.placeholder.com/40' }} style={styles.avatar} /&gt;
+        &lt;Text style={styles.username}&gt;react_native_master&lt;/Text&gt;
+      &lt;/View&gt;
+
+      {/* 2. Main Image Area */}
+      &lt;Image source={{ uri: 'https://via.placeholder.com/400' }} style={styles.mainImage} /&gt;
+
+      {/* 3. Bottom Action Buttons (Row alignment) */}
+      &lt;View style={styles.actions}&gt;
+        &lt;Text style={styles.icon}&gt;❤️&lt;/Text&gt;
+        &lt;Text style={styles.icon}&gt;💬&lt;/Text&gt;
+        &lt;Text style={styles.icon}&gt;✈️&lt;/Text&gt;
+      &lt;/View&gt;
+      
+      &lt;Text style={styles.likes}&gt;1,024 Likes&lt;/Text&gt;
+      
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    flex: 1, // Uses all available space
+    backgroundColor: '#fff',
+    marginBottom: 20,
+  },
+  header: {
+    flexDirection: 'row', // Changes default column to row for horizontal layout
+    alignItems: 'center', // Vertically centers items
+    padding: 10,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10, // Spacing between avatar and name
+  },
+  username: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  mainImage: {
+    width: '100%',
+    height: 400, // You can use fixed heights or an aspect ratio
+  },
+  actions: {
+    flexDirection: 'row', // Aligns action buttons horizontally
+    padding: 10,
+  },
+  icon: {
+    fontSize: 24,
+    marginRight: 15, // Spacing between buttons
+  },
+  likes: {
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  }
+});</code></pre>
+
+        <p>As you can see, by applying <code>flexDirection: 'row'</code>, we grouped the profile picture and name horizontally, as well as the action icons. The main container retains the default <code>column</code> direction, stacking everything neatly from top to bottom.</p>
+        
+        <div class="summary">
+            <h3>Chapter Summary</h3>
+            <ul>
+                <li><strong>Using StyleSheet</strong>: Uses a syntax similar to CSS but requires camelCase and unitless numbers for dimensions.</li>
+                <li><strong>Mobile-Optimized Flexbox</strong>: Utilizes elastic Flexbox layouts that dynamically adapt to various screen sizes.</li>
+                <li><strong>Default Axis is Column</strong>: Due to the vertical nature of mobile screens, elements stack downwards (<code>column</code>) by default. You only switch to <code>flexDirection: 'row'</code> when horizontal alignment is specifically needed.</li>
+            </ul>
+        </div>
+    </article>
+
+</body>
+</html>

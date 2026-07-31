@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Synthesize all React Native concepts by building a Weather Todo app. Learn how to combine State, API, Navigation, and FlatList, and explore the basics of app deployment using Expo.">
+    <meta name="keywords" content="React Native, Final Project, Todo App, App Deployment, Expo EAS, Build App, React Native Tutorial">
+    <title>Final Project & Deployment Basics | Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+        p { margin-bottom: 15px; }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+        }
+        pre code {
+            color: #212529;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #f1f8ff;
+            margin: 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+        .summary {
+            background-color: #e8f6f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <article>
+        <h1>10. Final Project & Deployment Basics</h1>
+        
+        <p>Throughout this series, we've unpacked the core concepts of React Native one by one: Core Components, Props, State, useEffect, Navigation, FlatList, and API integration. Now, it's time to put all these pieces together to build a fully functional real-world app, and get a taste of how to prepare it for deployment to the app stores.</p>
+
+        <h2>1. Integrating All Concepts: The Final Project</h2>
+        <p>Everything we have learned so far is akin to learning how to play different musical instruments. Now, it's time to perform a magnificent symphony.</p>
+
+        <blockquote>
+            <p>💡 <strong>Core Metaphor: "The Orchestral Performance"</strong><br>
+            A 'Final Project' is the process of harmoniously playing all the individually practiced instruments—Violin (UI), Cello (State), Flute (API), Conductor (Navigation)—together in sync with a single musical score (your App Design).</p>
+        </blockquote>
+
+        <h2>2. Practice: Building the 'Weather Todo' App</h2>
+        <p>Let's mobilize everything we've learned to create a 'Weather-integrated Todo App' that displays the current weather and allows users to add and delete tasks.</p>
+
+        <h3>Key Features & Applied Concepts</h3>
+        <ul>
+            <li><strong>API (fetch)</strong>: Displaying current weather at the top (OpenWeather API).</li>
+            <li><strong>State (useState)</strong>: Managing the text input and the array of todo items.</li>
+            <li><strong>Lifecycle (useEffect)</strong>: Fetching weather data exactly once when the app launches.</li>
+            <li><strong>List Optimization (FlatList)</strong>: Rendering a massive list of tasks without lag.</li>
+            <li><strong>Props</strong>: Reusing custom button components (like the delete button).</li>
+        </ul>
+
+        <h3>Core Code Structure (App.js)</h3>
+        <pre><code>import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, SafeAreaView } from 'react-native';
+
+export default function WeatherTodoApp() {
+  const [weather, setWeather] = useState('Loading weather...');
+  const [task, setTask] = useState('');
+  const [todoList, setTodoList] = useState([]);
+
+  // 1. useEffect + API (Fetch Weather)
+  useEffect(() =&gt; {
+    // Simulating an API call
+    setTimeout(() =&gt; {
+      setWeather('☀️ Sunny (24°C)');
+    }, 1000);
+  }, []);
+
+  // 2. State Mutation (Add Task)
+  const addTask = () =&gt; {
+    if (task.trim() === '') return;
+    const newTask = { id: Date.now().toString(), text: task };
+    setTodoList([...todoList, newTask]);
+    setTask(''); // Clear input
+  };
+
+  // 3. State Mutation (Delete Task)
+  const deleteTask = (id) =&gt; {
+    setTodoList(todoList.filter(item =&gt; item.id !== id));
+  };
+
+  // 4. Render function for FlatList
+  const renderTodoItem = ({ item }) =&gt; (
+    &lt;View style={styles.todoItem}&gt;
+      &lt;Text style={styles.todoText}&gt;{item.text}&lt;/Text&gt;
+      &lt;TouchableOpacity onPress={() =&gt; deleteTask(item.id)} style={styles.deleteBtn}&gt;
+        &lt;Text style={styles.deleteBtnText}&gt;Delete&lt;/Text&gt;
+      &lt;/TouchableOpacity&gt;
+    &lt;/View&gt;
+  );
+
+  return (
+    &lt;SafeAreaView style={styles.container}&gt;
+      {/* Header Area (Weather Display) */}
+      &lt;View style={styles.header}&gt;
+        &lt;Text style={styles.headerText}&gt;Today's Weather: {weather}&lt;/Text&gt;
+      &lt;/View&gt;
+
+      {/* Input Area */}
+      &lt;View style={styles.inputContainer}&gt;
+        &lt;TextInput 
+          style={styles.input} 
+          placeholder="Enter a task" 
+          value={task}
+          onChangeText={setTask}
+        /&gt;
+        &lt;TouchableOpacity style={styles.addBtn} onPress={addTask}&gt;
+          &lt;Text style={styles.addBtnText}&gt;Add&lt;/Text&gt;
+        &lt;/TouchableOpacity&gt;
+      &lt;/View&gt;
+
+      {/* List Area (Using FlatList) */}
+      &lt;FlatList 
+        data={todoList}
+        renderItem={renderTodoItem}
+        keyExtractor={item =&gt; item.id}
+        contentContainerStyle={{ padding: 20 }}
+      /&gt;
+    &lt;/SafeAreaView&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  header: { padding: 20, backgroundColor: '#4A90E2', alignItems: 'center' },
+  headerText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
+  inputContainer: { flexDirection: 'row', padding: 20, backgroundColor: 'white' },
+  input: { flex: 1, borderWidth: 1, borderColor: '#ddd', padding: 10, borderRadius: 5, marginRight: 10 },
+  addBtn: { backgroundColor: '#4A90E2', padding: 15, borderRadius: 5, justifyContent: 'center' },
+  addBtnText: { color: 'white', fontWeight: 'bold' },
+  todoItem: { flexDirection: 'row', justifyContent: 'space-between', padding: 15, backgroundColor: 'white', borderBottomWidth: 1, borderBottomColor: '#eee' },
+  todoText: { fontSize: 16 },
+  deleteBtn: { backgroundColor: '#FF3B30', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 },
+  deleteBtnText: { color: 'white' }
+});</code></pre>
+
+        <h2>3. Basics of Deployment (Build) and App Icons</h2>
+        <p>Once your app development is complete, you need to set up the app icon and build the app to upload it to stores (Play Store, App Store).</p>
+
+        <p><strong>The Build Flow when using Expo:</strong></p>
+        <ol>
+            <li><strong>Set App Icon & Splash Screen</strong>: In your project's <code>app.json</code> file, replace the <code>icon</code> and <code>splash.image</code> paths with the beautiful graphics you created.</li>
+            <li><strong>Setup EAS (Expo Application Services)</strong>: Install the tool via terminal using <code>npm install -g eas-cli</code> and log in with <code>eas login</code>.</li>
+            <li><strong>Configure Project</strong>: Run <code>eas build:configure</code> to set up your build configurations.</li>
+            <li><strong>Execute Build Command</strong>: 
+                <ul>
+                    <li>For Android (APK/AAB): <code>eas build -p android</code></li>
+                    <li>For iOS (IPA): <code>eas build -p ios</code></li>
+                </ul>
+            </li>
+            <li>Once the build completes on Expo's servers, they provide a download link. You can install it on your device or upload it to the store's developer console to launch!</li>
+        </ol>
+
+        <div class="summary">
+            <h3>Chapter Summary</h3>
+            <ul>
+                <li><strong>The Significance of a Final Project</strong>: It allows you to experience a complete, interactive app by combining UI design, state management, side effects, and data communication that you learned individually.</li>
+                <li><strong>Orchestral Performance</strong>: All components and Hooks must work harmoniously to produce a smooth, bug-free app (a flawless performance).</li>
+                <li><strong>Deployment Basics (Expo)</strong>: Set metadata and icons via <code>app.json</code>, and use the EAS CLI tool to build Android/iOS installation files in the cloud.</li>
+            </ul>
+        </div>
+    </article>
+
+</body>
+</html>

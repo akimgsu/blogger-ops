@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to handle routing and screen transitions in React Native using React Navigation. Understand Stacks, Tabs, and how to pass parameters.">
+    <meta name="keywords" content="React Native, React Navigation, Routing, Stack Navigation, Tab Navigation, Mobile App Routing, Parameters">
+    <title>Navigating Between Screens (React Navigation) | Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+        p { margin-bottom: 15px; }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+        }
+        pre code {
+            color: #212529;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #f1f8ff;
+            margin: 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+        .summary {
+            background-color: #e8f6f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <article>
+        <h1>07. Navigating Between Screens (React Navigation)</h1>
+        
+        <p>Most applications are not made of just a single screen. Like Instagram or WhatsApp, apps have multiple screens, and users navigate through them by tapping buttons. Today, we will explore <strong>React Navigation</strong>, the standard library for handling screen transitions (routing) in React Native.</p>
+
+        <h2>1. Understanding Mobile App Navigation</h2>
+        <p>On the web, clicking a link (an <code>&lt;a&gt;</code> tag) loads an entirely new HTML page. However, mobile apps operate differently because they are not browsers.</p>
+        
+        <p>Mobile app navigation generally takes the following forms:</p>
+        <ol>
+            <li><strong>Stack</strong>: Placing a new screen on top of the current screen. (The most fundamental method)</li>
+            <li><strong>Tab</strong>: Switching between screens using a tab bar located at the bottom or top.</li>
+            <li><strong>Drawer</strong>: A menu that slides out from the side of the screen like a drawer.</li>
+        </ol>
+
+        <h2>2. Stack Navigation and Passing Parameters</h2>
+        <p>Let's look closer at the most commonly used type: <strong>Stack Navigation</strong>.</p>
+
+        <blockquote>
+            <p>💡 <strong>Core Metaphor: "Stacking Cards"</strong><br>
+            Imagine stacking playing cards on a desk.<br>
+            When navigating to a new screen (<code>navigation.navigate</code>): You lay a new card on top of the existing screen.<br>
+            When going back (<code>navigation.goBack</code>): You discard the card on the very top, revealing the existing screen underneath.</p>
+        </blockquote>
+
+        <p>When you transition, you don't just change the view; you can also pass data (parameters) along. For example, if a user clicks 'Apple' on a product list screen, you pass the data 'Apple' to the details screen so it knows to display the apple details.</p>
+
+        <h2>3. Practice: Building a Login ↔ Main Tab Navigation Structure</h2>
+        <p>Let's build a practical app structure where a user starts at a Login screen (Stack) and, upon logging in, transitions to a Main interface featuring bottom tabs (Home and Settings).</p>
+
+        <p><em>(Note: To run this, you must install libraries like <code>@react-navigation/native</code>, <code>@react-navigation/native-stack</code>, and <code>@react-navigation/bottom-tabs</code>.)</em></p>
+
+        <pre><code>import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View, Text, Button, StyleSheet } from 'react-native';
+
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+// --- Screen Components ---
+
+// 1. Login Screen
+function LoginScreen({ navigation }) {
+  return (
+    &lt;View style={styles.center}&gt;
+      &lt;Text style={styles.text}&gt;Login Screen&lt;/Text&gt;
+      {/* Navigates to MainTab (Puts a new card on the stack) */}
+      &lt;Button title="Log In" onPress={() =&gt; navigation.navigate('MainTab')} /&gt;
+    &lt;/View&gt;
+  );
+}
+
+// 2. Home Screen (Tab 1)
+function HomeScreen() {
+  return (
+    &lt;View style={styles.center}&gt;
+      &lt;Text style={styles.text}&gt;🏠 Home Screen&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}
+
+// 3. Settings Screen (Tab 2)
+function SettingsScreen() {
+  return (
+    &lt;View style={styles.center}&gt;
+      &lt;Text style={styles.text}&gt;⚙️ Settings Screen&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}
+
+// --- Navigator Configurations ---
+
+// Bottom Tab Navigator (Groups Home and Settings)
+function MainTabNavigator() {
+  return (
+    &lt;Tab.Navigator&gt;
+      &lt;Tab.Screen name="Home" component={HomeScreen} /&gt;
+      &lt;Tab.Screen name="Settings" component={SettingsScreen} /&gt;
+    &lt;/Tab.Navigator&gt;
+  );
+}
+
+// Top-level Stack Navigator (Groups Login and the Tab Navigator)
+export default function App() {
+  return (
+    // The container that manages our navigation tree
+    &lt;NavigationContainer&gt;
+      &lt;Stack.Navigator initialRouteName="Login"&gt;
+        &lt;Stack.Screen name="Login" component={LoginScreen} /&gt;
+        {/* Calling 'MainTab' renders the entire Tab Navigator as a screen */}
+        &lt;Stack.Screen 
+          name="MainTab" 
+          component={MainTabNavigator} 
+          options={{ headerShown: false }} // Hides the stack header on the tab screens
+        /&gt;
+      &lt;/Stack.Navigator&gt;
+    &lt;/NavigationContainer&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  text: { fontSize: 24, marginBottom: 20 },
+});</code></pre>
+
+        <p>When you run this code, the 'Login Screen' appears first. Pressing 'Log In' places a new card (MainTab) on the stack, transitioning you to the main interface complete with a bottom tab bar to switch between Home and Settings!</p>
+        
+        <div class="summary">
+            <h3>Chapter Summary</h3>
+            <ul>
+                <li><strong>React Navigation</strong>: The de facto standard library for handling screen transitions and routing in React Native apps.</li>
+                <li><strong>Stack Navigation</strong>: Works like stacking cards. New screens are placed on top using <code>navigation.navigate()</code>, and the top screen is discarded when going back.</li>
+                <li><strong>Combining Navigators</strong>: In real-world apps, you frequently combine Stacks, Tabs, and Drawers within a single app (e.g., nesting a Tab Navigator inside a Stack Navigator after a Login screen).</li>
+            </ul>
+        </div>
+    </article>
+
+</body>
+</html>

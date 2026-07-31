@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to render large datasets efficiently in React Native using FlatList. Understand the performance differences between ScrollView and FlatList and implement infinite scrolling.">
+    <meta name="keywords" content="React Native, FlatList, ScrollView, Performance Optimization, Lazy Loading, Infinite Scroll, List Rendering">
+    <title>Rendering Large Datasets (FlatList & Optimization) | Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+        p { margin-bottom: 15px; }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+        }
+        pre code {
+            color: #212529;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #f1f8ff;
+            margin: 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+        .summary {
+            background-color: #e8f6f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <article>
+        <h1>09. Rendering Large Datasets (FlatList & Performance Optimization)</h1>
+        
+        <p>When building apps, you frequently need to display lists containing dozens or hundreds of items (e.g., a WhatsApp contact list, an Instagram feed). To make a screen simply scrollable, you could use a <code>&lt;ScrollView&gt;</code>. However, if your data exceeds a few hundred items, your app might lag or even crash. Today, we'll learn about <strong><code>&lt;FlatList&gt;</code></strong>, the essential component for performance optimization when rendering lists.</p>
+
+        <h2>1. The Limits of ScrollView and the Introduction of FlatList</h2>
+        <p>If you have 1,000 items, a <code>&lt;ScrollView&gt;</code> will render (load into memory) all 1,000 of them at once, even the 990 items that are currently off-screen. Naturally, this wastes device memory and severely slows down the app.</p>
+        
+        <p>In contrast, <strong><code>&lt;FlatList&gt;</code></strong> employs a technique called <strong>Lazy Loading</strong>. It wipes off-screen items from memory and renders them in real-time just as the user scrolls them into view.</p>
+
+        <blockquote>
+            <p>💡 <strong>Core Metaphor: "Sushi Conveyor Belt"</strong><br>
+            - <strong>ScrollView</strong>: The chef makes all 1,000 sushi rolls at once and piles them onto your table. (The table breaks = the app crashes).<br>
+            - <strong>FlatList</strong>: The chef only places sushi on the 10 plates passing right in front of the customer. Plates that have passed are cleared, and new sushi is placed only on approaching plates via a <strong>conveyor belt</strong> system.</p>
+        </blockquote>
+
+        <h2>2. The 3 Core Props of FlatList</h2>
+        <p>To use <code>FlatList</code> effectively, you must understand three mandatory (or highly recommended) Props.</p>
+        <ol>
+            <li><strong><code>data</code></strong>: The source array of data you want to render. (e.g., <code>[{id: 1, name: 'A'}, {id: 2, name: 'B'}]</code>)</li>
+            <li><strong><code>renderItem</code></strong>: A function that defines how each item in the <code>data</code> array should be drawn as UI.</li>
+            <li><strong><code>keyExtractor</code></strong>: A function that extracts a unique Key for each item. React uses this to track items and optimize rendering.</li>
+        </ol>
+
+        <h2>3. Practice: Implementing an Infinite Scroll List</h2>
+        <p>Let's build a FlatList capable of smoothly scrolling through hundreds of mock data entries.</p>
+
+        <pre><code>import React, { useState } from 'react';
+import { View, Text, FlatList, StyleSheet, SafeAreaView } from 'react-native';
+
+// 1. Generate 100 mock data entries
+const INITIAL_DATA = Array.from({ length: 100 }, (_, index) =&gt; ({
+  id: String(index + 1),
+  name: `User ${index + 1}`,
+}));
+
+export default function UserListApp() {
+  const [users, setUsers] = useState(INITIAL_DATA);
+
+  // 2. renderItem function: Defines how to draw each item
+  // We destructure { item } from the parameter
+  const renderUserItem = ({ item }) =&gt; (
+    &lt;View style={styles.itemContainer}&gt;
+      &lt;Text style={styles.itemName}&gt;{item.name}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+
+  return (
+    &lt;SafeAreaView style={styles.container}&gt;
+      &lt;Text style={styles.headerTitle}&gt;Contact List (FlatList)&lt;/Text&gt;
+      
+      {/* 3. Applying the FlatList component */}
+      &lt;FlatList
+        data={users}                           // Source data array
+        renderItem={renderUserItem}            // UI rendering function
+        keyExtractor={(item) =&gt; item.id}       // Unique Key extraction function
+        
+        // Options for performance and infinite scrolling (for reference)
+        initialNumToRender={10}                // How many items to render initially
+        onEndReached={() =&gt; console.log('Hit the bottom! Need to load more data')}
+        onEndReachedThreshold={0.5}            // Trigger event when 50% away from the bottom
+      /&gt;
+    &lt;/SafeAreaView&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  itemContainer: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    backgroundColor: '#fff',
+  },
+  itemName: {
+    fontSize: 18,
+  }
+});</code></pre>
+
+        <p>Run this code and scroll as fast as you can. Even with 100 (or 10,000) items, the app won't stutter; it scrolls buttery smooth. This is because <code>FlatList</code> intelligently renders only the items visible on the screen. By utilizing the <code>onEndReached</code> property, you can easily implement an <strong>Infinite Scroll</strong> feature that requests the next page of data from the server the moment the user hits the bottom.</p>
+        
+        <div class="summary">
+            <h3>Chapter Summary</h3>
+            <ul>
+                <li><strong>ScrollView vs FlatList</strong>: <code>ScrollView</code> loads all data into memory at once causing performance degradation, whereas <code>FlatList</code> renders only visible data (lazy loading) to optimize memory.</li>
+                <li><strong>Sushi Conveyor Belt Metaphor</strong>: <code>FlatList</code> acts like a conveyor belt, placing data only on the plates currently in your viewport.</li>
+                <li><strong>Essential Props</strong>: They work as a trio: <code>data</code> for the source array, <code>renderItem</code> to draw the UI, and <code>keyExtractor</code> to pull out unique identifiers.</li>
+            </ul>
+        </div>
+    </article>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An introduction to React Native. Learn the differences between React and React Native, understand the Bridge architecture, and build your first Hello World app.">
+    <meta name="keywords" content="React Native, React, Mobile Development, Expo, React Native CLI, JavaScript, Bridge Architecture, iOS, Android">
+    <title>What is React Native? (Differences from React) | Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+        p { margin-bottom: 15px; }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+        }
+        pre code {
+            color: #212529;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #f1f8ff;
+            margin: 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+        .summary {
+            background-color: #e8f6f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <article>
+        <h1>01. What is React Native? (Differences from React)</h1>
+        
+        <p>Hello there! Today, we are taking our first steps into the world of mobile app development by exploring <strong>React Native (RN)</strong>. If you have experience in web development or have worked with React, RN is an incredibly appealing framework. But why should we use it? And how exactly does it differ from React in a web environment?</p>
+
+        <h2>1. Differences in Rendering: Web Development (React) vs. Mobile Apps (RN)</h2>
+        <p>React operates in the browser, utilizing HTML, CSS, and JavaScript to manipulate the <strong>DOM (Document Object Model)</strong> and render the screen. When we use tags like <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code>, the browser interprets them and draws them onto the screen.</p>
+        
+        <p>However, mobile operating systems (iOS and Android) are not browsers. iOS draws screens using <code>UIView</code> written in Objective-C or Swift, while Android uses <code>View</code> written in Java or Kotlin.</p>
+        
+        <p>This is where React Native works its magic. It maps the JavaScript code we write into native components (<code>UIView</code>, <code>View</code>) that the native operating system can understand and render natively.</p>
+
+        <h2>2. The Core Architecture of React Native: The Bridge</h2>
+        <p>How does JavaScript code get converted into native elements? It's all thanks to the core architecture of RN: <strong>The Bridge</strong>.</p>
+        
+        <p>The Bridge acts as a communication channel between the environment where JavaScript code runs (JS Thread) and the environment where native code runs (Native Thread), allowing them to exchange messages asynchronously.</p>
+
+        <blockquote>
+            <p>💡 <strong>Core Metaphor: "The Interpreter (Bridge)"</strong><br>
+            Think of it like this: If you give instructions in Korean (JavaScript), the interpreter (Bridge) translates them into English (iOS) and Spanish (Android), giving commands to the local workers (Native Thread).</p>
+        </blockquote>
+
+        <p>When we send a message via JavaScript saying "Draw a button here" through the Bridge, iOS creates a <code>UIButton</code> and Android creates an <code>android.widget.Button</code> to display on the screen.</p>
+
+        <h2>3. Practice: Setting Up the RN Environment (Expo vs. CLI) & Running 'Hello World'</h2>
+        <p>There are two primary ways to start a React Native app: <strong>Expo CLI</strong> and <strong>React Native CLI</strong>.</p>
+        
+        <ul>
+            <li><strong>Expo CLI</strong>: A toolchain that helps you start developing apps quickly without complex native setups. Highly recommended for beginners.</li>
+            <li><strong>React Native CLI</strong>: Used when you need to touch native code (Java, Objective-C, etc.) directly or when custom native modules are required.</li>
+        </ul>
+
+        <h3>Hello World Tutorial using Expo</h3>
+        
+        <p><strong>1. Create an Expo Project</strong><br>
+        Open your terminal and enter the following commands:</p>
+        <pre><code>npx create-expo-app HelloWorld
+cd HelloWorld</code></pre>
+
+        <p><strong>2. Run the App</strong></p>
+        <pre><code>npx expo start</code></pre>
+
+        <p><strong>3. Edit the Code</strong><br>
+        Open the <code>App.js</code> file in your project folder and modify it as follows:</p>
+        <pre><code>import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+
+export default function App() {
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;Text&gt;Hello World! This is my first React Native app.&lt;/Text&gt;
+      &lt;StatusBar style="auto" /&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});</code></pre>
+        <p>After saving, check the Expo Go app (or simulator) and you will see 'Hello World!' displayed on your screen.</p>
+        
+        <div class="summary">
+            <h3>Chapter Summary</h3>
+            <ul>
+                <li><strong>React vs React Native</strong>: React manipulates the DOM to render in a browser, whereas React Native maps to native components (iOS, Android) to render on mobile devices.</li>
+                <li><strong>Bridge Architecture</strong>: Acts as an interpreter between the JavaScript environment and the Native environment, sending and receiving messages asynchronously.</li>
+                <li><strong>Expo vs CLI</strong>: Choose Expo for a quick start and convenience, or React Native CLI if you need fine-grained control over the native layer.</li>
+            </ul>
+        </div>
+    </article>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Understand how to pass data between components in React Native using Props. Learn about one-way data flow and how to maximize component reusability.">
+    <meta name="keywords" content="React Native, Props, Data Flow, Components, Mobile App Development, Reusable Components">
+    <title>Passing Data (Props) | Tech Blog</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        h3 { color: #2980b9; }
+        p { margin-bottom: 15px; }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+        }
+        pre code {
+            color: #212529;
+        }
+        blockquote {
+            border-left: 5px solid #3498db;
+            background-color: #f1f8ff;
+            margin: 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+        .summary {
+            background-color: #e8f6f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <article>
+        <h1>04. Passing Data (Props)</h1>
+        
+        <p>So far, we have learned how to create components and organize our UI. However, an app needs data to actually function! Today, we will learn about <strong>Props</strong>, the core concept for passing data between components.</p>
+
+        <h2>1. What are Props?</h2>
+        <p><strong>Props</strong> is short for 'Properties'. Simply put, it refers to <strong>data passed down from a parent component to a child component</strong>.</p>
+        
+        <p>As your app grows, you will break down your screens into smaller, manageable components. Invariably, you will need to hand data over from one component to another. That is exactly what Props are used for.</p>
+
+        <h3>One-Way Data Flow</h3>
+        <p>One of the most critical principles in React and React Native is that <strong>"data flows top-down"</strong>. You can only pass Props from a parent to a child, and the child cannot directly alter the parent's data. This is known as one-way data binding.</p>
+
+        <blockquote>
+            <p>💡 <strong>Core Metaphor: "Genetics (DNA)"</strong><br>
+            Think of Props as the <strong>DNA</strong> a parent passes to a child. The child inherits characteristics (data) like eye color or hair color and displays them, but the child cannot spontaneously change the genes they inherited.</p>
+        </blockquote>
+
+        <h2>2. Why Use Props? (Maximizing Reusability)</h2>
+        <p>The biggest reason to use Props is to maximize the <strong>reusability</strong> of your components.</p>
+
+        <p>If you need an 'OK', 'Cancel', and 'Submit' button, it would be highly inefficient to build three entirely separate button components. Instead, you create just one foundational button component and <strong>pass different colors and texts via Props</strong>. This keeps your code incredibly clean and efficient.</p>
+
+        <h2>3. Practice: Building a Reusable Custom Button Component</h2>
+        <p>Let's create a single button component and reuse it multiple times by passing different Props from the parent.</p>
+
+        <h3>Child Component (CustomButton.js)</h3>
+        <pre><code>import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+
+// We receive the props object as a parameter (using destructuring)
+export default function CustomButton({ title, bgColor }) {
+  return (
+    &lt;TouchableOpacity style={[styles.button, { backgroundColor: bgColor }]}&gt;
+      &lt;Text style={styles.buttonText}&gt;{title}&lt;/Text&gt;
+    &lt;/TouchableOpacity&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  button: {
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  }
+});</code></pre>
+
+        <h3>Parent Component (App.js)</h3>
+        <pre><code>import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import CustomButton from './CustomButton';
+
+export default function App() {
+  return (
+    &lt;View style={styles.container}&gt;
+      {/* 
+        Calling the child component (CustomButton) 
+        and passing 'title' and 'bgColor' as Props. 
+      */}
+      &lt;CustomButton title="OK" bgColor="#007AFF" /&gt;
+      &lt;CustomButton title="Cancel" bgColor="#FF3B30" /&gt;
+      &lt;CustomButton title="Submit" bgColor="#34C759" /&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+});</code></pre>
+
+        <p>Through this exercise, we wrote the structure for a button component just once! Yet, depending on the Props (<code>title</code>, <code>bgColor</code>) handed down by the parent component, we successfully generated three completely distinct buttons.</p>
+        
+        <div class="summary">
+            <h3>Chapter Summary</h3>
+            <ul>
+                <li><strong>Definition of Props</strong>: Data passed from a parent component down to a child component.</li>
+                <li><strong>One-Way Flow</strong>: Data only travels from top to bottom. Child components can only read the Props they receive, they cannot modify them directly (like inheriting DNA).</li>
+                <li><strong>Reusability</strong>: When you need elements with identical UI structures but different data, you build a single component and swap out the Props, greatly maximizing code reusability.</li>
+            </ul>
+        </div>
+    </article>
+
+</body>
+</html>
