@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn why OAuth 2.0 alone is not authentication, and how OpenID Connect adds ID Tokens, standard claims, and UserInfo for modern login.">
+    <meta name="keywords" content="OpenID Connect, OIDC, ID Token, openid scope, UserInfo endpoint, nonce">
+    <title>07. OpenID Connect OIDC | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>07. OpenID Connect (OIDC)</h1>
+        <p>Teams often say they “log users in with OAuth.” Strictly speaking, <strong>OAuth 2.0 is not an authentication protocol</strong>. OpenID Connect adds the missing identity layer on top of OAuth.</p>
+    </header>
+
+    <section>
+        <h2>Why OAuth Alone Is Incomplete for Login</h2>
+        <p>OAuth answers: “May this client call that API on the user’s behalf?” Login needs: “Who is sitting at the browser, and what is their email/name/verification status?” Access tokens alone do not standardize those answers across IdPs.</p>
+    </section>
+
+    <section>
+        <h2>OIDC as an Authentication Layer</h2>
+        <p>OIDC extends OAuth with ID Tokens, a UserInfo endpoint, standard scopes (<code>openid</code>, <code>profile</code>, <code>email</code>), and discovery documents.</p>
+        <pre><code>GET /authorize?
+  response_type=code&amp;
+  client_id=my-app&amp;
+  redirect_uri=https://app.example.com/callback&amp;
+  scope=openid profile email&amp;
+  state=abc&amp;
+  nonce=n0nce-value</code></pre>
+        <p>Including <code>openid</code> makes the flow OIDC. Token responses often include an ID Token alongside the access token.</p>
+    </section>
+
+    <section>
+        <h2>ID Token vs Access Token</h2>
+        <table>
+            <thead>
+                <tr><th>Aspect</th><th>ID Token</th><th>Access Token</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Primary consumer</td><td>Client application</td><td>Resource server / API</td></tr>
+                <tr><td>Purpose</td><td>Authentication result</td><td>API authorization</td></tr>
+                <tr><td>Typical audience</td><td>Client ID</td><td>API identifier</td></tr>
+            </tbody>
+        </table>
+        <pre><code>async function verifyIdToken(idToken, jwks, clientId, expectedNonce) {
+  const { payload } = await jose.jwtVerify(idToken, jwks, {
+    issuer: "https://auth.example.com/",
+    audience: clientId
+  });
+  if (payload.nonce !== expectedNonce) throw new Error("INVALID_NONCE");
+  return payload;
+}</code></pre>
+        <p>Anti-pattern: sending ID Tokens to APIs as Bearer credentials. APIs should authorize with access tokens.</p>
+    </section>
+
+    <section>
+        <h2>UserInfo</h2>
+        <pre><code>GET /userinfo
+Authorization: Bearer &lt;access_token&gt;</code></pre>
+        <p>Use UserInfo when profile claims are not fully embedded in the ID Token.</p>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>OAuth authorizes APIs; OIDC standardizes authentication.</li>
+            <li>ID Tokens prove login to clients; access tokens authorize APIs.</li>
+            <li>Validate audience and nonce for ID Tokens.</li>
+            <li>OIDC unlocks portable profile claims and multi-app SSO.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

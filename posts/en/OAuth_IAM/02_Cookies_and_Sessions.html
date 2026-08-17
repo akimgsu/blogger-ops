@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Understand cookie and session-based stateful authentication, server memory limits, and why sessions struggle in microservices architectures.">
+    <meta name="keywords" content="Cookies and Sessions, Stateful authentication, Redis session store, MSA session problems, HttpOnly Secure SameSite">
+    <title>02. Cookies and Sessions | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>02. Cookies and Sessions</h1>
+        <p>HTTP was designed as a <strong>stateless</strong> protocol. Servers forget prior requests unless the application adds state. Shopping carts, login state, and multi-step forms forced the industry toward the classic pair: <strong>cookies</strong> and <strong>sessions</strong>.</p>
+    </header>
+
+    <section>
+        <h2>What Is a Cookie?</h2>
+        <p>A cookie is a small piece of data the server asks the browser to store and resend on later requests via <code>Set-Cookie</code> / <code>Cookie</code> headers.</p>
+        <pre><code>HTTP/1.1 200 OK
+Set-Cookie: session_id=abc123; Path=/; HttpOnly; Secure; SameSite=Lax</code></pre>
+        <ul>
+            <li><strong>HttpOnly:</strong> not readable by JavaScript (harder XSS theft)</li>
+            <li><strong>Secure:</strong> sent only over HTTPS</li>
+            <li><strong>SameSite:</strong> mitigates CSRF</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>What Is a Session?</h2>
+        <p>In practice, “login session” usually means: the server stores session data (userId, roles, cart), while the browser holds only a session ID cookie. Each request looks up that ID in server memory, a database, or Redis.</p>
+        <pre><code>app.post("/login", async (req, res) => {
+  const user = await validateCredentials(req.body);
+  req.session.userId = user.id;
+  req.session.roles = user.roles;
+  res.json({ ok: true });
+});</code></pre>
+        <p>The real state lives on the server—hence <strong>stateful authentication</strong>.</p>
+    </section>
+
+    <section>
+        <h2>Strengths of Stateful Sessions</h2>
+        <ul>
+            <li>Immediate logout by deleting server-side session data</li>
+            <li>Sensitive claims stay off the client</li>
+            <li>Straightforward in monolithic server-rendered apps</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Limits of Server Memory Management</h2>
+        <p>In-process sessions vanish on restart, break with multi-instance load balancing unless sticky sessions or a shared store are used, and grow expensive under load. Redis helps, but you still operate a central state store.</p>
+    </section>
+
+    <section>
+        <h2>Why Sessions Hurt in the MSA Era</h2>
+        <p>Microservices amplify friction: shared session schemas couple teams, cookie domain rules get messy across gateways, central stores become bottlenecks, and mobile or partner API clients prefer bearer tokens over browser cookies.</p>
+        <p>Sessions are not “wrong”—they become costly in distributed, multi-client systems. That cost pushed the industry toward token-based, more stateless designs and eventually OAuth 2.0.</p>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>Cookies carry small client data; sessions typically keep state on the server behind a session ID.</li>
+            <li>Sessions excel at immediate revocation and server-side control.</li>
+            <li>Shared stores, scaling, and cross-domain constraints become expensive at scale.</li>
+            <li>MSA and diverse clients motivate token-based approaches.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

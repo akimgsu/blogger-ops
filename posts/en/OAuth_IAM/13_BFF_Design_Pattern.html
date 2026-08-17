@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Implement the Backend for Frontend pattern so Angular SPAs never hold OAuth tokens—BFF stores secrets server-side and uses HttpOnly session cookies.">
+    <meta name="keywords" content="BFF pattern, Backend for Frontend, SPA OAuth security, session cookie BFF, CSRF SameSite">
+    <title>13. BFF Design Pattern | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>13. BFF (Backend for Frontend) Design Pattern</h1>
+        <p>SPA browsers are hostile environments for secrets. The modern answer is a <strong>Backend for Frontend</strong>: keep access and refresh tokens on the server, and give the browser only an HttpOnly session cookie.</p>
+    </header>
+
+    <section>
+        <h2>What a BFF Does in OAuth</h2>
+        <ol>
+            <li>Runs Authorization Code (+ PKCE) exchange</li>
+            <li>Stores tokens in server-side sessions (often Redis)</li>
+            <li>Sets an HttpOnly Secure session cookie for the SPA</li>
+            <li>Attaches Bearer tokens only on server-to-API calls</li>
+        </ol>
+        <pre><code>[Angular SPA] --session cookie--&gt; [BFF]
+                                       | Authorization: Bearer
+                                       v
+                                 [Resource API / ORDS]</code></pre>
+    </section>
+
+    <section>
+        <h2>Why Keep Tokens Out of the Browser?</h2>
+        <ul>
+            <li>XSS cannot easily exfiltrate bearer strings from LocalStorage</li>
+            <li>Refresh/rotation logic concentrates in one place</li>
+            <li>IdP details stay behind the BFF while Angular stays simple</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Login-to-API Sequence</h2>
+        <pre><code>app.get("/auth/callback", async (req, res) => {
+  const tokens = await exchangeCode({
+    code: req.query.code,
+    codeVerifier: req.session.codeVerifier
+  });
+  req.session.accessToken = tokens.access_token;
+  req.session.refreshToken = tokens.refresh_token;
+  res.redirect("https://app.example.com/");
+});
+
+app.get("/api/orders", requireSession, async (req, res) => {
+  const data = await fetch("https://api.example.com/orders", {
+    headers: { Authorization: `Bearer ${req.session.accessToken}` }
+  }).then((r) => r.json());
+  res.json(data);
+});</code></pre>
+    </section>
+
+    <section>
+        <h2>CSRF Becomes Mandatory Again</h2>
+        <p>Automatic cookie attachment reintroduces CSRF. Combine SameSite cookies, CSRF tokens, and Origin checks on state-changing methods.</p>
+        <pre><code>this.http.get&lt;Order[]&gt;("/api/orders", { withCredentials: true });</code></pre>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>BFF holds OAuth tokens; browsers hold only session cookies.</li>
+            <li>Removing tokens from JS sharply reduces XSS blast radius.</li>
+            <li>Cookie sessions require deliberate CSRF defenses.</li>
+            <li>Ideal for high-security browser SPAs despite added session ops.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

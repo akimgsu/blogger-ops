@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn the clear difference between Authentication and Authorization with practical analogies, HTTP status codes, and why separating identity from permissions is foundational to OAuth and IAM.">
+    <meta name="keywords" content="Authentication vs Authorization, AuthN AuthZ, OAuth IAM basics, 401 vs 403, identity and access control">
+    <title>01. Authentication vs Authorization | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>01. Authentication vs Authorization</h1>
+        <p>Two words dominate every security design conversation: <strong>Authentication</strong> and <strong>Authorization</strong>. Casual speech often blends them, but engineering must keep them strictly separate. Confusing the two leads to broken token design, over-privileged access, and serious incidents.</p>
+    </header>
+
+    <section>
+        <h2>Authentication: “Who Are You?”</h2>
+        <p><strong>Authentication</strong> verifies that a principal is who they claim to be. Typical factors include something you know (password), something you have (OTP or hardware key), and something you are (biometrics).</p>
+        <p>After a successful login, systems usually issue a session or token so subsequent requests do not require re-entering credentials. That credential asserts identity—not permissions.</p>
+        <pre><code>async function authenticate(username, password) {
+  const user = await findUserByUsername(username);
+  if (!user) throw new Error("USER_NOT_FOUND");
+
+  const ok = await verifyPassword(password, user.passwordHash);
+  if (!ok) throw new Error("INVALID_CREDENTIALS");
+
+  // Authentication success → issue an identity credential
+  return issueCredential({ sub: user.id, email: user.email });
+}</code></pre>
+    </section>
+
+    <section>
+        <h2>Authorization: “What Are You Allowed to Do?”</h2>
+        <p><strong>Authorization</strong> decides whether an already authenticated principal may perform a specific action on a specific resource. Being logged in does not grant unlimited API access.</p>
+        <ul>
+            <li><strong>Role-based (RBAC):</strong> user, editor, admin</li>
+            <li><strong>Scopes/permissions:</strong> orders:read, orders:write</li>
+            <li><strong>Attributes/policies (ABAC):</strong> department, plan, resource ownership</li>
+        </ul>
+        <pre><code>function authorize(user, action, resource) {
+  if (user.roles.includes("admin")) return true;
+  if (action === "update" && resource.ownerId === user.id) return true;
+  return false;
+}</code></pre>
+    </section>
+
+    <section>
+        <h2>Real-World Analogy: ID Card vs Building Badge</h2>
+        <p>A government ID proves identity (authentication). A building access badge decides which floors and rooms you may enter (authorization). The same person can have different badges as roles change.</p>
+        <table>
+            <thead>
+                <tr><th>Dimension</th><th>Authentication</th><th>Authorization</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Question</td><td>Who are you?</td><td>What can you do?</td></tr>
+                <tr><td>Analogy</td><td>National ID</td><td>Building badge</td></tr>
+                <tr><td>Typical HTTP</td><td>401 Unauthorized</td><td>403 Forbidden</td></tr>
+            </tbody>
+        </table>
+        <p>Historically, HTTP uses <code>401</code> for authentication failure and <code>403</code> for authorization failure—names that still confuse newcomers.</p>
+    </section>
+
+    <section>
+        <h2>Why Separation Matters for OAuth and IAM</h2>
+        <p>Modern systems often split responsibilities: an IdP issues credentials, while APIs enforce scopes and roles. When the boundary collapses, teams fall into password sharing, “login equals full access,” and unauditable permission models.</p>
+        <p>OAuth 2.0 is fundamentally an <em>authorization delegation</em> framework. Standardized end-user authentication arrives with OpenID Connect. Understanding this distinction is the starting point of the entire series.</p>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>Authentication verifies identity; authorization checks permissions for that identity.</li>
+            <li>ID cards authenticate; building badges authorize.</li>
+            <li>By convention, use 401 for authn failures and 403 for authz failures.</li>
+            <li>Correct OAuth/IAM design begins by separating login from permission delegation.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

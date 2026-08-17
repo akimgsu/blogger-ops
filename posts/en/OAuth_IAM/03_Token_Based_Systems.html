@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover how token-based authentication enables stateless APIs, how digital signatures validate tokens without server-side session lookup, and the trade-offs of JWT architectures.">
+    <meta name="keywords" content="Token-based authentication, Stateless API, JWT signature verification, RS256 JWKS, Bearer token">
+    <title>03. Token-Based Systems | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>03. Token-Based Systems</h1>
+        <p>As APIs and microservices spread, “the server must remember every login” became expensive. <strong>Token-based systems</strong> emerged so requests can carry verifiable proof of identity and permissions.</p>
+    </header>
+
+    <section>
+        <h2>What Is a Token?</h2>
+        <p>A token is a string that proves who is calling and what they may do. Clients typically send it as:</p>
+        <pre><code>Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+        <p>Common forms include opaque tokens (require introspection) and JWTs (self-contained claims). Access, refresh, and ID tokens serve different purposes covered later in the series.</p>
+    </section>
+
+    <section>
+        <h2>Benefits of Stateless Servers</h2>
+        <ul>
+            <li><strong>Horizontal scaling:</strong> any instance can verify with shared keys—no sticky sessions</li>
+            <li><strong>Service propagation:</strong> gateways verify once and forward identity downstream</li>
+            <li><strong>Client diversity:</strong> browsers, mobile apps, CLI tools, and jobs share one header pattern</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Cryptographic Verification Without Remembering Tokens</h2>
+        <p>If a token’s integrity can be proven mathematically, servers can trust its claims without a session database lookup.</p>
+        <h3>HMAC (shared secret)</h3>
+        <p>Easy to implement, but every verifier needs the secret—painful as services multiply.</p>
+        <h3>Public-key signatures (preferred in distributed systems)</h3>
+        <p>The authorization server signs with a private key; resource servers verify with public keys published via JWKS.</p>
+        <pre><code>function verifyAccessToken(token, publicKey) {
+  return jwt.verify(token, publicKey, {
+    algorithms: ["RS256"],
+    issuer: "https://auth.example.com/",
+    audience: "https://api.example.com"
+  });
+}</code></pre>
+        <p>Verification typically checks signature, issuer, audience, expiration, and scopes/roles.</p>
+    </section>
+
+    <section>
+        <h2>Trade-offs of Stateless Tokens</h2>
+        <ul>
+            <li>Immediate revocation is harder—use short TTLs, denylists, or introspection</li>
+            <li>Avoid stuffing sensitive PII into JWT payloads</li>
+            <li>Private-key compromise breaks trust system-wide—key management is critical</li>
+        </ul>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>Tokens enable request-level proof without central session lookups.</li>
+            <li>Digital signatures let APIs trust claims without storing every token.</li>
+            <li>Asymmetric verification scales well across microservices.</li>
+            <li>Stateless designs trade easy revocation for scalability and require strong key hygiene.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

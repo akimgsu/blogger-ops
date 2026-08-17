@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Walk through the OAuth 2.0 Authorization Code Grant end to end and learn why temporary authorization codes protect access tokens from front-channel exposure.">
+    <meta name="keywords" content="Authorization Code Grant, OAuth authorize token endpoints, OAuth state parameter, PKCE, confidential client">
+    <title>05. Authorization Code Grant | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>05. Authorization Code Grant</h1>
+        <p>The <strong>Authorization Code Grant</strong> is the workhorse OAuth 2.0 flow—and the modern default. It standardizes the journey from login button to API call while keeping valuable tokens off the browser redirect channel.</p>
+    </header>
+
+    <section>
+        <h2>End-to-End Sequence</h2>
+        <ol>
+            <li>User clicks “Login with IdP”</li>
+            <li>Client redirects to the authorization server’s <code>/authorize</code></li>
+            <li>User authenticates and consents</li>
+            <li>IdP redirects back with a short-lived <code>code</code></li>
+            <li>Client backend exchanges the code at <code>/token</code></li>
+            <li>Client calls APIs with the access token</li>
+        </ol>
+        <pre><code>GET https://auth.example.com/authorize?
+  response_type=code&amp;
+  client_id=my-web-app&amp;
+  redirect_uri=https://app.example.com/oauth/callback&amp;
+  scope=orders:read profile&amp;
+  state=random-csrf-token</code></pre>
+    </section>
+
+    <section>
+        <h2>Code Callback and Token Exchange</h2>
+        <pre><code>GET https://app.example.com/oauth/callback?code=SplxlOBeZQQYbYS6WxSbIA&amp;state=random-csrf-token</code></pre>
+        <p>The code is not an access token. The confidential client exchanges it on the back channel:</p>
+        <pre><code>POST /token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&amp;
+code=SplxlOBeZQQYbYS6WxSbIA&amp;
+redirect_uri=https://app.example.com/oauth/callback&amp;
+client_id=my-web-app&amp;
+client_secret=SECRET</code></pre>
+    </section>
+
+    <section>
+        <h2>Why Issue a Temporary Code First?</h2>
+        <p>Browser redirects are a noisy front channel—history, proxies, Referer headers, and extensions can leak URL data. Delivering access tokens directly (the old Implicit flow) widens that exposure. A short-lived, usually one-time code is exchanged over a server-to-server HTTPS POST, so the valuable token never rides the redirect.</p>
+        <pre><code>Front-channel (browser): short-lived code
+Back-channel (server POST /token): access / refresh tokens</code></pre>
+    </section>
+
+    <section>
+        <h2>Implementation Checklist</h2>
+        <ul>
+            <li>Generate and validate <code>state</code> (CSRF defense)</li>
+            <li>Exact-match registered <code>redirect_uri</code></li>
+            <li>Reject reused authorization codes</li>
+            <li>Never log raw tokens</li>
+            <li>Public clients must use PKCE</li>
+        </ul>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>Authorization Code Grant is the recommended OAuth 2.0 flow.</li>
+            <li>Browsers receive temporary codes; backends exchange them for tokens.</li>
+            <li>The design keeps access tokens off the exposed front channel.</li>
+            <li>Validate state, redirect URI, and one-time codes every time.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

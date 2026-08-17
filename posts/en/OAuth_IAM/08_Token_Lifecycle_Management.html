@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage OAuth token lifecycles with short-lived access tokens, protected refresh tokens, silent refresh patterns, and single-flight renewal for SPAs.">
+    <meta name="keywords" content="Access Token, Refresh Token, Silent Refresh, token rotation, Angular interceptor refresh">
+    <title>08. Token Lifecycle Management | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>08. Token Lifecycle Management</h1>
+        <p>Issuing a token is only the beginning. Long-lived access tokens enlarge breach windows; overly short ones destroy UX. <strong>Refresh tokens</strong> and <strong>silent refresh</strong> resolve that tension.</p>
+    </header>
+
+    <section>
+        <h2>Access Tokens: Short-Lived Working Keys</h2>
+        <p>Access tokens call APIs. Keep TTLs short (minutes to about an hour), store them where JavaScript cannot freely read them when possible, and include only necessary claims.</p>
+    </section>
+
+    <section>
+        <h2>Refresh Tokens: Longer-Lived Renewal Keys</h2>
+        <pre><code>POST /token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token&amp;
+refresh_token=8xLOxBtZp8&amp;
+client_id=my-web-app&amp;
+client_secret=SECRET</code></pre>
+        <p>Refresh tokens are more sensitive. Prefer rotation on use and reuse detection to spot theft.</p>
+    </section>
+
+    <section>
+        <h2>Why Split the Two?</h2>
+        <p>Frequently exposed credentials should be short-lived. Rarely used renewal secrets can live longer under stronger protection. That separation balances security and seamless sessions.</p>
+    </section>
+
+    <section>
+        <h2>Silent Refresh Logic</h2>
+        <p>Silent refresh renews tokens without showing a login UI—typically via the refresh-token grant through a BFF or secure cookie endpoint.</p>
+        <pre><code>async refresh() {
+  const res = await fetch("/auth/refresh", {
+    method: "POST",
+    credentials: "include"
+  });
+  if (!res.ok) throw new Error("REFRESH_FAILED");
+  const data = await res.json();
+  this.accessToken = data.access_token;
+  return this.accessToken;
+}</code></pre>
+        <p>Combine proactive refresh (before expiry) with reactive retry on 401. Deduplicate concurrent refreshes with a single-flight promise.</p>
+        <pre><code>let refreshPromise = null;
+function refreshSingleFlight() {
+  if (!refreshPromise) {
+    refreshPromise = doRefresh().finally(() => { refreshPromise = null; });
+  }
+  return refreshPromise;
+}</code></pre>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>Access tokens are short-lived API credentials; refresh tokens renew them.</li>
+            <li>Silent refresh preserves UX while keeping access TTLs short.</li>
+            <li>Rotate refresh tokens and single-flight concurrent renewals.</li>
+            <li>Separate purpose and storage for each token type.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

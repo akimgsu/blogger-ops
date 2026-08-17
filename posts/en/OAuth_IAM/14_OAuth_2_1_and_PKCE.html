@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Adopt OAuth 2.1 best practices: retire Implicit flow, require PKCE with code verifier and SHA-256 code challenge, and stop shipping tokens on the front channel.">
+    <meta name="keywords" content="OAuth 2.1, PKCE, Proof Key for Code Exchange, Implicit flow deprecated, code verifier challenge S256">
+    <title>14. OAuth 2.1 and PKCE | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>14. Modern Standards: OAuth 2.1 and PKCE</h1>
+        <p>OAuth 2.0 succeeded, but some early grants aged poorly. <strong>OAuth 2.1</strong> consolidates security best practices—especially retiring Implicit flow and centering <strong>Authorization Code + PKCE</strong>.</p>
+    </header>
+
+    <section>
+        <h2>OAuth 2.1 Directions That Matter</h2>
+        <ul>
+            <li>Authorization Code + PKCE as the default for public clients</li>
+            <li>Implicit grant removed</li>
+            <li>Resource Owner Password Credentials grant removed/discouraged</li>
+            <li>No bearer tokens in query strings; exact redirect URI matching</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Why Implicit Flow Was Deprecated</h2>
+        <p>Implicit returned access tokens in URL fragments to SPAs that could not keep secrets. Fragments leak via history, logs, Referer, and extensions; there is no one-time code buffer; refresh handling is awkward. Modern browsers can do Auth Code + PKCE instead.</p>
+        <pre><code>https://app.example.com/callback#access_token=...&amp;token_type=Bearer</code></pre>
+    </section>
+
+    <section>
+        <h2>PKCE: Mathematical Defense Against Code Theft</h2>
+        <ol>
+            <li>Client creates a high-entropy <strong>code_verifier</strong></li>
+            <li>Computes <code>code_challenge = BASE64URL(SHA256(code_verifier))</code> (S256)</li>
+            <li>Sends only the challenge to <code>/authorize</code></li>
+            <li>Later sends the verifier to <code>/token</code></li>
+            <li>Server accepts the exchange only if the hash matches</li>
+        </ol>
+        <pre><code>async function createPkcePair() {
+  const verifier = base64UrlEncode(crypto.randomBytes(32));
+  const challenge = base64UrlEncode(
+    crypto.createHash("sha256").update(verifier).digest()
+  );
+  return { verifier, challenge };
+}</code></pre>
+        <p>Stealing the authorization code without the verifier fails at token exchange—critical for mobile and other redirect-interception scenarios.</p>
+    </section>
+
+    <section>
+        <h2>Adoption Checklist</h2>
+        <ul>
+            <li>Remove Implicit and Password grants</li>
+            <li>Require PKCE S256 for public clients</li>
+            <li>Optionally add PKCE even for confidential clients</li>
+            <li>Keep <code>state</code>—PKCE does not replace CSRF protection</li>
+        </ul>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>OAuth 2.1 hardens defaults around Auth Code + PKCE.</li>
+            <li>Implicit exposed tokens on the front channel and is obsolete.</li>
+            <li>PKCE binds code exchange to a secret verifier via SHA-256.</li>
+            <li>Use PKCE and state together.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

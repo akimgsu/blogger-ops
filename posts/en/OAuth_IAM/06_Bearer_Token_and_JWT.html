@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Demystify Bearer tokens and JWT structure—header, payload, and signature—and why Base64 encoding is not encryption.">
+    <meta name="keywords" content="Bearer Token, JWT, JSON Web Token, RS256 signature, Base64URL not encryption">
+    <title>06. Bearer Token and JWT | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>06. Bearer Token and JWT</h1>
+        <p>The most common API credential header is <code>Authorization: Bearer &lt;token&gt;</code>. This chapter explains what “bearer” means, how JWTs are built, and the critical warning that <strong>Base64 is not encryption</strong>.</p>
+    </header>
+
+    <section>
+        <h2>What “Bearer” Means</h2>
+        <p>Per RFC 6750, possession of the token is enough to exercise its privileges—like a movie ticket. Whoever holds a valid ticket gets in. That is why HTTPS, careful storage, and short lifetimes are mandatory.</p>
+        <pre><code>Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0In0.signature</code></pre>
+    </section>
+
+    <section>
+        <h2>JWT Anatomy</h2>
+        <p>A JWT is three Base64URL parts separated by dots:</p>
+        <pre><code>base64url(header).base64url(payload).base64url(signature)</code></pre>
+
+        <h3>Header</h3>
+        <pre><code>{
+  "alg": "RS256",
+  "typ": "JWT",
+  "kid": "2026-08-key"
+}</code></pre>
+
+        <h3>Payload</h3>
+        <pre><code>{
+  "iss": "https://auth.example.com/",
+  "sub": "user-123",
+  "aud": "https://api.example.com",
+  "exp": 1760000000,
+  "scope": "orders:read profile"
+}</code></pre>
+
+        <h3>Signature</h3>
+        <p>The signature prevents tampering. Resource servers verify with a public key and must pin allowed algorithms to avoid algorithm confusion attacks.</p>
+        <pre><code>function verifyBearerJwt(token, publicKey) {
+  return jwt.verify(token, publicKey, {
+    algorithms: ["RS256"],
+    issuer: "https://auth.example.com/",
+    audience: "https://api.example.com"
+  });
+}</code></pre>
+    </section>
+
+    <section>
+        <h2>Base64 Encoding Is Not Encryption</h2>
+        <p>Anyone can decode the header and payload. Signatures ensure integrity, not confidentiality. Do not put government IDs, password hashes, or sensitive PII in access-token payloads. Use JWE or keep secrets server-side.</p>
+        <pre><code>echo 'eyJzdWIiOiIxMjM0Iiwicm9sZSI6ImFkbWluIn0' | base64 -d
+# {"sub":"1234","role":"admin"}</code></pre>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>Bearer tokens grant rights to whoever possesses them.</li>
+            <li>JWTs contain header, payload, and signature; verification is the trust root.</li>
+            <li>Base64URL is readable encoding, not encryption.</li>
+            <li>Validate alg/iss/aud/exp, use HTTPS, and keep TTLs short.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

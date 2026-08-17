@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compare open-source IAM platforms GLUU and Keycloak for self-hosted authorization servers, LDAP/AD federation, and centralized MFA.">
+    <meta name="keywords" content="Keycloak, GLUU, open source IAM, LDAP Active Directory federation, self-hosted IdP, MFA">
+    <title>11. Open Source IAM GLUU and Keycloak | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>11. Open-Source IAM: GLUU and Keycloak</h1>
+        <p>When data residency, custom flows, or existing directories directories require self-hosting, open-source IAM platforms let you run your own authorization server / IdP. <strong>Keycloak</strong> and <strong>GLUU</strong> are common choices.</p>
+    </header>
+
+    <section>
+        <h2>Why Build Your Own Authorization Server?</h2>
+        <ul>
+            <li>Keep identity data on-prem or in a private cloud</li>
+            <li>Implement specialized authentication journeys</li>
+            <li>Reduce vendor lock-in and optimize licensing</li>
+            <li>Continue using LDAP/AD as the authoritative store</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Keycloak at a Glance</h2>
+        <p>Keycloak provides OIDC/SAML, realm-based multi-tenancy, identity brokering, LDAP/AD user federation, roles/groups, admin APIs, and MFA options.</p>
+        <pre><code>docker run -p 8080:8080 \
+  -e KEYCLOAK_ADMIN=admin \
+  -e KEYCLOAK_ADMIN_PASSWORD=admin \
+  quay.io/keycloak/keycloak:latest start-dev</code></pre>
+        <p>Create a realm, register clients and redirect URIs, map roles, then point applications at the Keycloak issuer.</p>
+    </section>
+
+    <section>
+        <h2>GLUU at a Glance</h2>
+        <p>GLUU targets enterprise IAM/SSO packaging: authorization server capabilities, directory-centric identity, SAML/OIDC app connectivity, and extensible MFA/custom scripts. Choose based on your organization’s packaging needs, support model, and operational familiarity—always re-check current licensing and patch policies.</p>
+    </section>
+
+    <section>
+        <h2>Directory Integration and MFA</h2>
+        <p>Design Source of Truth carefully, map attributes (<code>mail</code> → <code>email</code>), translate AD groups into application roles, and sync disablement so leavers lose SSO immediately.</p>
+        <pre><code>function requireMfa(req, res, next) {
+  if (req.user?.acr !== "mfa") {
+    return res.status(403).json({ error: "mfa_required" });
+  }
+  next();
+}</code></pre>
+        <p>Enforcing MFA at the IdP upgrades every connected app at once.</p>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>GLUU and Keycloak enable self-hosted IdP/authorization servers.</li>
+            <li>LDAP/AD federation preserves enterprise directories while offering OIDC/SAML.</li>
+            <li>Central MFA strengthens every relying party simultaneously.</li>
+            <li>Source of truth, mapping, HA, and patching decide production success.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

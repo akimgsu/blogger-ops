@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore why OAuth 2.0 was created to kill the password anti-pattern, and master the four core roles: resource owner, client, authorization server, and resource server.">
+    <meta name="keywords" content="OAuth 2.0, Password Anti-Pattern, Authorization Server, Resource Server, OAuth scopes, consent">
+    <title>04. OAuth 2.0 Background and Purpose | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>04. OAuth 2.0 Background and Purpose</h1>
+        <p>Before “Sign in with Google” felt normal, third-party apps often asked for your real passwords. That convenience was a security disaster. <strong>OAuth 2.0</strong> exists to delegate limited access without sharing credentials.</p>
+    </header>
+
+    <section>
+        <h2>The Password Anti-Pattern</h2>
+        <p>Users typed their Google password into a printing app; the app logged in as the user and accessed mail or Drive freely. Consequences include credential sprawl, no least privilege, weak revocation, and missing consent UX.</p>
+        <p>OAuth’s goal is simple: <em>delegate scoped access, and revoke it later—without sharing passwords.</em></p>
+    </section>
+
+    <section>
+        <h2>What OAuth Solves—and What It Does Not</h2>
+        <p>RFC 6749 defines an <strong>authorization framework</strong>. It explains how a client accesses protected resources on behalf of a resource owner. By itself, it is not a complete authentication protocol for proving “who is at the keyboard.” OpenID Connect later fills that gap.</p>
+    </section>
+
+    <section>
+        <h2>The Four Core Roles</h2>
+        <ol>
+            <li><strong>Resource Owner:</strong> usually the end user who owns the data</li>
+            <li><strong>Client:</strong> the application requesting access (web, SPA, mobile, or server)</li>
+            <li><strong>Authorization Server:</strong> authenticates the user, collects consent, issues tokens</li>
+            <li><strong>Resource Server:</strong> hosts APIs and validates access tokens</li>
+        </ol>
+        <p>In OAuth vocabulary, “client” means the application—not the browser.</p>
+    </section>
+
+    <section>
+        <h2>Scopes: The Language of Least Privilege</h2>
+        <pre><code>GET /authorize?
+  response_type=code&amp;
+  client_id=print-app&amp;
+  redirect_uri=https://print.example.com/callback&amp;
+  scope=drive.readonly&amp;
+  state=xyz</code></pre>
+        <p>Users can approve read-only Drive access and later revoke the app—control that password sharing never offered.</p>
+        <pre><code>function handleDriveList(req) {
+  const claims = verify(extractBearer(req));
+  if (!claims.scope.split(" ").includes("drive.readonly")) {
+    return { status: 403, error: "insufficient_scope" };
+  }
+  return listFiles(claims.sub);
+}</code></pre>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>The password anti-pattern shares real credentials with third parties—OAuth replaces that with scoped delegation.</li>
+            <li>OAuth 2.0 authorizes access; it is not a standalone authentication protocol.</li>
+            <li>Master the four roles and scopes to reason about any OAuth deployment.</li>
+            <li>Consent and revocation restore user control.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

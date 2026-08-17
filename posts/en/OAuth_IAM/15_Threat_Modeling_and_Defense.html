@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Threat-model OAuth and IAM systems against token hijacking, replay attacks, and CSRF, and apply Zero Trust continuous authorization defenses.">
+    <meta name="keywords" content="OAuth threat modeling, token hijacking, replay attack, CSRF SameSite, Zero Trust IAM, refresh token reuse detection">
+    <title>15. Threat Modeling and Defense | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>15. Threat Modeling and Defense</h1>
+        <p>Shipping a correct OAuth flow is not the finish line. Attackers abuse operational gaps—XSS, logs, cookies, and stale trust. This final chapter maps major threats and defenses, including <strong>Zero Trust</strong> continuous authorization.</p>
+    </header>
+
+    <section>
+        <h2>Threat-Modeling Questions</h2>
+        <ol>
+            <li>Where are tokens created, stored, transmitted, and destroyed?</li>
+            <li>Who can intercept or replay each artifact?</li>
+            <li>What is the blast radius after theft?</li>
+            <li>Can you detect, revoke, rotate keys, and force step-up auth?</li>
+        </ol>
+        <p>Inventory assets first: access/refresh/ID tokens, session cookies, client secrets, and signing keys.</p>
+    </section>
+
+    <section>
+        <h2>Token Hijacking Scenarios</h2>
+        <h3>XSS theft</h3>
+        <p>Move tokens to HttpOnly cookies or BFF sessions, enforce CSP, and shorten access TTLs.</p>
+        <h3>Log and URL leakage</h3>
+        <p>Never put bearer tokens in query strings; mask secrets in logs; force HTTPS.</p>
+        <h3>Refresh-token theft</h3>
+        <pre><code>async function refresh(presentedToken) {
+  const saved = await store.get(presentedToken);
+  if (!saved) {
+    await store.revokeFamily(presentedToken);
+    throw new Error("REFRESH_REUSE_DETECTED");
+  }
+  const next = await issueRotatedTokens(saved);
+  await store.invalidate(presentedToken);
+  return next;
+}</code></pre>
+    </section>
+
+    <section>
+        <h2>Replay Attacks</h2>
+        <p>Replay resubmits captured codes or tokens. Defend with short expirations, one-time codes, OIDC nonce checks, sender-constrained tokens when needed, and step-up authentication for sensitive actions.</p>
+    </section>
+
+    <section>
+        <h2>CSRF and SameSite</h2>
+        <p>Cookies auto-attach—great for UX, dangerous for CSRF. Use <code>SameSite=Lax/Strict</code>, OAuth <code>state</code>, CSRF headers, and Origin validation.</p>
+        <pre><code>if (req.headers.origin !== "https://app.example.com") {
+  return res.status(403).json({ error: "origin_denied" });
+}</code></pre>
+    </section>
+
+    <section>
+        <h2>Zero Trust Philosophy</h2>
+        <p>Zero Trust rejects “trusted network location.” Every request is authenticated and authorized continuously with least privilege, device/risk signals, short-lived credentials, and step-up MFA for privileged operations.</p>
+        <pre><code>[Request] -&gt; Authenticate -&gt; Authorize(policy) -&gt; Risk engine
+                              |- allow / deny / step-up</code></pre>
+    </section>
+
+    <section>
+        <h2>Final Defense Checklist</h2>
+        <ol>
+            <li>Auth Code + PKCE only; no Implicit/Password grants</li>
+            <li>Short access tokens; rotated, well-protected refresh tokens</li>
+            <li>Minimize browser-held secrets (BFF/HttpOnly)</li>
+            <li>Strict JWT validation (alg/iss/aud/exp)</li>
+            <li>CSRF + XSS defenses and CSP</li>
+            <li>Key management, audit logs, and emergency revoke playbooks</li>
+        </ol>
+        <p>This series began by separating authentication from authorization and ends with attacker-driven defense. Standards plus threat-informed operations are what make identity security real.</p>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>Hijacking and replay demand short TTLs, one-time codes, nonces, and refresh rotation.</li>
+            <li>CSRF rides on cookie auto-attachment—mitigate with SameSite, state, and CSRF tokens.</li>
+            <li>Zero Trust requires continuous verification and least privilege, not one-time login trust.</li>
+            <li>Protocol correctness must combine with XSS/CSRF, key ops, and revoke readiness.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>

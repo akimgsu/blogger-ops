@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Design AWS Cognito correctly: User Pools for authentication, Identity Pools for temporary AWS credentials, and social login federation with Google and Apple.">
+    <meta name="keywords" content="AWS Cognito, User Pool, Identity Pool, Cognito federation, social login Google Apple, aws-jwt-verify">
+    <title>12. AWS Cognito Integration | OAuth &amp; IAM</title>
+</head>
+<body>
+<article>
+    <header>
+        <h1>12. Cloud-Managed IdP: AWS Cognito Integration</h1>
+        <p>If operating your own IdP is too costly, <strong>Amazon Cognito</strong> is the common AWS-managed option. The key is distinguishing <strong>User Pools</strong> from <strong>Identity Pools</strong>.</p>
+    </header>
+
+    <section>
+        <h2>User Pool vs Identity Pool</h2>
+        <h3>User Pool = Authentication (IdP)</h3>
+        <p>Handles sign-up/sign-in, MFA, app clients, and optional social/SAML/OIDC federation. Outputs ID, access, and refresh tokens.</p>
+        <h3>Identity Pool = Temporary AWS Credentials</h3>
+        <p>Exchanges an authenticated identity for short-lived AWS keys so clients can call S3, DynamoDB, and other AWS APIs under IAM roles.</p>
+        <pre><code>[User] -&gt; User Pool -&gt; JWTs -&gt; API Gateway / backend
+                         \-&gt; Identity Pool -&gt; AWS creds -&gt; S3</code></pre>
+        <p>If the browser never talks to AWS APIs directly, a User Pool alone is often enough.</p>
+    </section>
+
+    <section>
+        <h2>User Pool Design Checklist</h2>
+        <ul>
+            <li>Public vs confidential app clients</li>
+            <li>Exact callback and logout URLs</li>
+            <li>Hosted UI versus custom UI + SDK</li>
+            <li>Required attributes and token TTLs</li>
+            <li>Groups / Pre Token Generation for custom claims</li>
+        </ul>
+        <pre><code>const verifier = CognitoJwtVerifier.create({
+  userPoolId: process.env.COGNITO_USER_POOL_ID,
+  tokenUse: "access",
+  clientId: process.env.COGNITO_CLIENT_ID
+});</code></pre>
+    </section>
+
+    <section>
+        <h2>Identity Pool Roles</h2>
+        <p>Use authenticated roles for signed-in users and keep unauthenticated roles disabled or extremely limited. Prefix S3 paths with Cognito identity IDs to enforce per-user home directories.</p>
+    </section>
+
+    <section>
+        <h2>Social Federation Architecture</h2>
+        <p>Wire Google/Apple into the User Pool so your app validates <em>Cognito</em> tokens only—no per-provider verification forks.</p>
+        <pre><code>const params = new URLSearchParams({
+  client_id: environment.cognitoClientId,
+  response_type: "code",
+  scope: "openid email profile",
+  redirect_uri: environment.redirectUri
+});
+window.location.href = `https://${domain}/oauth2/authorize?${params}`;</code></pre>
+    </section>
+
+    <hr>
+    <footer>
+        <h3>Chapter Summary</h3>
+        <ul>
+            <li>User Pools authenticate users; Identity Pools mint AWS credentials.</li>
+            <li>Most API backends primarily verify User Pool JWTs.</li>
+            <li>Social IdPs federate into Cognito for a single token format.</li>
+            <li>Client type, callbacks, TTLs, and role mapping drive secure designs.</li>
+        </ul>
+    </footer>
+</article>
+</body>
+</html>
